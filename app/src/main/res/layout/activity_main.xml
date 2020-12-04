@@ -73,7 +73,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:max="201" />
+                            android:max="200" />
+
+                        <TextView
+                            android:id="@+id/txtContrastValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100" />
 
                     </TableRow>
 
@@ -98,6 +104,12 @@
                             android:layout_weight="1"
                             android:max="50" />
 
+                        <TextView
+                            android:id="@+id/txtMarginValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0" />
+
                     </TableRow>
 
                     <TableRow
@@ -121,8 +133,15 @@
                             android:layout_weight="1"
                             android:max="20" />
 
+                        <TextView
+                            android:id="@+id/txtBorderValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0" />
+
                         <FrameLayout
                             android:layout_width="@android:dimen/app_icon_size"
+                            android:layout_span="1"
                             android:backgroundTint="@color/teal_200"
                             android:minHeight="32dp"
                             android:padding="1dp">
