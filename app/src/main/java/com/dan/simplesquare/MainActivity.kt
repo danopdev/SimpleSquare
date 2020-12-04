@@ -106,6 +106,41 @@ class MainActivity :
         }
     }
 
+    private fun adjustContrast(colorMatrix: ColorMatrix, value: Int) {
+        if (value == 100) return
+
+        var scale =
+            if (value < 100) value / 200.0f + 0.5f
+            else value / 100.0f
+        val translate = (-.5f * scale + .5f) * 255f
+
+        val mat = floatArrayOf(
+                scale, 0f, 0f, 0f, translate,
+                0f, scale, 0f, 0f, translate,
+                0f, 0f, scale, 0f, translate,
+                0f, 0f, 0f, 1f, 0f
+            )
+
+        colorMatrix.postConcat(ColorMatrix(mat))
+    }
+
+    private fun adjustSaturation(colorMatrix: ColorMatrix, valueInt: Int) {
+        if (valueInt == 0) return
+
+        val value = valueInt.toFloat()
+        val x = 1 + if (value > 0) 3 * value / 100 else value / 100
+        val lumR = 0.3086f
+        val lumG = 0.6094f
+        val lumB = 0.0820f
+        val mat = floatArrayOf(
+            lumR * (1 - x) + x, lumG * (1 - x), lumB * (1 - x), 0f, 0f,
+            lumR * (1 - x), lumG * (1 - x) + x, lumB * (1 - x), 0f, 0f,
+            lumR * (1 - x), lumG * (1 - x), lumB * (1 - x) + x, 0f, 0f,
+            0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 0f, 1f)
+
+        colorMatrix.postConcat(ColorMatrix(mat))
+    }
+
     private fun generateImage(targetSize_: Int): Bitmap? {
         val srcImage = this.srcImage ?: return null
         val srcImageWidth = srcImage.width
@@ -159,11 +194,16 @@ class MainActivity :
             )
         }
 
+        val colorMatrix = ColorMatrix()
+        adjustContrast( colorMatrix, binding.seekBarContrast.progress)
+        val filterPaint = Paint()
+        filterPaint.colorFilter = ColorMatrixColorFilter(colorMatrix)
+
         canvas.drawBitmap(
             srcImage,
             null,
             Rect(destImgX, destImgY, destImgX + destImgWidth, destImgY + destImgHeight),
-            null
+            filterPaint
         )
 
         return destImage
@@ -193,7 +233,15 @@ class MainActivity :
             if (rotate != 0) {
                 val matrix = Matrix()
                 matrix.postRotate(rotate.toFloat())
-                val rotatedBitmap = Bitmap.createBitmap( bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                val rotatedBitmap = Bitmap.createBitmap(
+                    bitmap,
+                    0,
+                    0,
+                    bitmap.width,
+                    bitmap.height,
+                    matrix,
+                    true
+                )
                 if (rotatedBitmap != null) bitmap = rotatedBitmap
             }
 
@@ -250,7 +298,11 @@ class MainActivity :
         return false
     }
 
-    private fun handleRequestPermissions( requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    private fun handleRequestPermissions(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         var allowedAll = grantResults.size >= PERMISSIONS.size
 
         if (grantResults.size >= PERMISSIONS.size) {
@@ -266,8 +318,12 @@ class MainActivity :
         else exitApp()
     }
 
-    private fun selectColor( initColor: Int, l: (Int)->Unit ) {
-        val dialog = ColorPicker(this, Color.red(initColor), Color.green(initColor), Color.blue(initColor))
+    private fun selectColor(initColor: Int, l: (Int) -> Unit) {
+        val dialog = ColorPicker(
+            this, Color.red(initColor), Color.green(initColor), Color.blue(
+                initColor
+            )
+        )
         dialog.enableAutoClose()
         dialog.setCallback { color -> l.invoke(color) }
         dialog.show()
@@ -300,7 +356,7 @@ class MainActivity :
         }
 
         binding.buttonBackgroundColor.setOnClickListener {
-            selectColor( backgroundColor ) { color ->
+            selectColor(backgroundColor) { color ->
                 backgroundColor = color
                 updateImage()
             }
@@ -313,7 +369,7 @@ class MainActivity :
         }
 
         binding.buttonBorderColor.setOnClickListener {
-            selectColor( borderColor ) { color ->
+            selectColor(borderColor) { color ->
                 borderColor = color
                 updateImage()
             }
