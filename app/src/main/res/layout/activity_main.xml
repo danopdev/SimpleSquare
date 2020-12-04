@@ -145,15 +145,16 @@
                             android:text="0" />
 
                         <FrameLayout
+                            android:background="@color/teal_200"
                             android:layout_width="32dp"
-                            android:backgroundTint="@color/teal_200"
-                            android:minHeight="32dp"
+                            android:layout_height="32dp"
                             android:padding="1dp">
 
                             <ImageButton
                                 android:id="@+id/buttonBorderColor"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:background="@color/black"
                                 app:srcCompat="@drawable/ic_launcher_foreground" />
                         </FrameLayout>
                     </TableRow>
@@ -198,14 +199,15 @@
 
                         <FrameLayout
                             android:layout_width="32dp"
-                            android:backgroundTint="@color/teal_200"
-                            android:minHeight="32dp"
+                            android:layout_height="32dp"
+                            android:background="@color/teal_200"
                             android:padding="1dp">
 
                             <ImageButton
                                 android:id="@+id/buttonBackgroundColor"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:background="@color/white"
                                 app:srcCompat="@drawable/ic_launcher_foreground" />
                         </FrameLayout>
 
