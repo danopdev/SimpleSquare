@@ -27,6 +27,10 @@ class MainActivity :
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
 
+        const val DEFAULT_CONTRAST = 100
+        const val DEFAULT_MARGIN = 10
+        const val DEFAULT_BORDER = 0
+
         const val REQUEST_PERMISSIONS = 1
         const val INTENT_OPEN_IMAGE = 2
 
@@ -248,9 +252,25 @@ class MainActivity :
         binding = ActivityMainBinding.inflate( layoutInflater )
 
         binding.imageView.setOnClickListener { if (null == srcImage) openImage() }
+
         binding.seekBarBoder.setOnSeekBarChangeListener(this)
         binding.seekBarMargin.setOnSeekBarChangeListener(this)
         binding.seekBarContrast.setOnSeekBarChangeListener(this)
+
+        binding.txtContrast.setOnLongClickListener {
+            binding.seekBarContrast.progress = DEFAULT_CONTRAST
+            true
+        }
+
+        binding.txtMargin.setOnLongClickListener {
+            binding.seekBarMargin.progress = DEFAULT_MARGIN
+            true
+        }
+
+        binding.txtBorder.setOnLongClickListener {
+            binding.seekBarBoder.progress = DEFAULT_BORDER
+            true
+        }
 
         updateValues()
 
