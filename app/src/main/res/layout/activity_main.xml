@@ -7,7 +7,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:padding="16dp">
+        android:isScrollContainer="true"
+        android:padding="16dp"
+        android:scrollbars="vertical">
 
         <FrameLayout
             android:id="@+id/frameLayout"
@@ -46,21 +48,133 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Contrast:"
-                    android:textStyle="bold" />
-
-                <SeekBar
-                    android:id="@+id/seekBarContrast"
+                <TableLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:max="201" />
+                    android:layout_height="match_parent">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:minHeight="32dp">
+
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Contrast:"
+                            android:textAlignment="textEnd"
+                            android:textStyle="bold" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarContrast"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:max="201" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:minHeight="32dp">
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Margin:"
+                            android:textAlignment="textEnd"
+                            android:textStyle="bold" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarMargin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:max="20" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:minHeight="32dp">
+
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Border:"
+                            android:textAlignment="textEnd"
+                            android:textStyle="bold" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarBoder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:max="20" />
+
+                        <FrameLayout
+                            android:layout_width="@android:dimen/app_icon_size"
+                            android:backgroundTint="@color/teal_200"
+                            android:minHeight="32dp"
+                            android:padding="1dp">
+
+                            <ImageButton
+                                android:id="@+id/buttonBorderColor"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                app:srcCompat="@drawable/ic_launcher_foreground" />
+                        </FrameLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:minHeight="32dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textView4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Background:"
+                            android:textAlignment="textEnd"
+                            android:textStyle="bold" />
+
+                        <RadioGroup
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:checkedButton="@id/rbBackgroundColor"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/rbBackgroundBlur"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Blur" />
+
+                            <RadioButton
+                                android:id="@+id/rbBackgroundColor"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Color" />
+                        </RadioGroup>
+
+                    </TableRow>
+
+                </TableLayout>
+
             </LinearLayout>
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
