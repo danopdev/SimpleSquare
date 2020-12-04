@@ -10,12 +10,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.SeekBar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.dan.simplesquare.databinding.ActivityMainBinding
 import java.lang.Integer.max
 
-class MainActivity : AppCompatActivity() {
+class MainActivity :
+    AppCompatActivity(),
+    SeekBar.OnSeekBarChangeListener
+{
 
     companion object {
         val PERMISSIONS = arrayOf<String>(
@@ -237,10 +241,21 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate( layoutInflater )
 
-        binding.imageView.setOnClickListener {
-            if (null == srcImage) openImage()
-        }
+        binding.imageView.setOnClickListener { if (null == srcImage) openImage() }
+        binding.seekBarBoder.setOnSeekBarChangeListener(this)
+        binding.seekBarMargin.setOnSeekBarChangeListener(this)
+        binding.seekBarContrast.setOnSeekBarChangeListener(this)
 
         setContentView(binding.root)
+    }
+
+    override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+        updateImage()
+    }
+
+    override fun onStartTrackingTouch(p0: SeekBar?) {
+    }
+
+    override fun onStopTrackingTouch(p0: SeekBar?) {
     }
 }
