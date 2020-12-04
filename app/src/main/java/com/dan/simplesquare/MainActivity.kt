@@ -95,8 +95,8 @@ class MainActivity :
             else targetSize_
 
         val ratio = targetSize_.toFloat() / IMG_WORK_SIZE
-        val margin = (binding.seekBarMargin.progress * ratio).toInt()
-        val border = (binding.seekBarBoder.progress * ratio).toInt()
+        val margin = 2 * (binding.seekBarMargin.progress * ratio).toInt()
+        val border = 2 * (binding.seekBarBoder.progress * ratio).toInt()
         val fullMargin = margin + border
 
         if (targetSize_ <= 0) targetSize += 2 * fullMargin
@@ -131,8 +131,8 @@ class MainActivity :
             canvas.drawRect(
                 (destImgX - border).toFloat(),
                 (destImgY - border).toFloat(),
-                (destImgX + destImgWidth + 2 * border).toFloat(),
-                (destImgY + destImgHeight + 2 * border).toFloat(),
+                (destImgX + destImgWidth + border).toFloat(),
+                (destImgY + destImgHeight + border).toFloat(),
                 borderPaint
             )
         }
