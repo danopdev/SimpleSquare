@@ -4,17 +4,20 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
+import android.graphics.drawable.ColorDrawable
 import android.media.ExifInterface
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.dan.simplesquare.databinding.ActivityMainBinding
+import com.pes.androidmaterialcolorpickerdialog.ColorPicker
 import java.lang.Integer.max
+
 
 class MainActivity :
     AppCompatActivity(),
@@ -31,6 +34,9 @@ class MainActivity :
         const val DEFAULT_MARGIN = 10
         const val DEFAULT_BORDER = 0
 
+        const val DEFAULT_BACKGROUND_COLOR = Color.WHITE
+        const val DEFAULT_BORDER_COLOR = Color.BLACK
+
         const val REQUEST_PERMISSIONS = 1
         const val INTENT_OPEN_IMAGE = 2
 
@@ -41,13 +47,25 @@ class MainActivity :
     private var srcImage: Bitmap? = null
     private lateinit var menuSave: MenuItem
 
+    private var backgroundColor: Int
+            get() = (binding.buttonBackgroundColor.getBackground() as ColorDrawable).color
+            set(color) { binding.buttonBackgroundColor.setBackgroundColor(color) }
+
+    private var borderColor: Int
+        get() = (binding.buttonBorderColor.getBackground() as ColorDrawable).color
+        set(color) { binding.buttonBorderColor.setBackgroundColor(color) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (!askPermissions())
             onPermissionsAllowed()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         when (requestCode) {
             REQUEST_PERMISSIONS -> handleRequestPermissions(requestCode, permissions, grantResults)
         }
@@ -82,7 +100,7 @@ class MainActivity :
                 if (RESULT_OK == resultCode && null != intent) {
                     val uri = intent.data
                     if (null != uri)
-                        loadImage( uri )
+                        loadImage(uri)
                 }
             return
         }
@@ -109,10 +127,10 @@ class MainActivity :
             if (targetSize_ <= 0) max(srcImageWidth, srcImageHeight)
             else targetSize - 2 * fullMargin
 
-        val destImage = Bitmap.createBitmap( targetSize, targetSize, Bitmap.Config.ARGB_8888 )
+        val destImage = Bitmap.createBitmap(targetSize, targetSize, Bitmap.Config.ARGB_8888)
 
         val canvas = Canvas(destImage)
-        canvas.drawColor(Color.WHITE)
+        canvas.drawColor(backgroundColor)
 
         var destImgWidth: Int
         var destImgHeight: Int
@@ -131,7 +149,7 @@ class MainActivity :
         if (border > 0) {
             val borderPaint = Paint()
             borderPaint.style = Paint.Style.FILL
-            borderPaint.color = Color.BLACK
+            borderPaint.color = borderColor
             canvas.drawRect(
                 (destImgX - border).toFloat(),
                 (destImgY - border).toFloat(),
@@ -144,7 +162,7 @@ class MainActivity :
         canvas.drawBitmap(
             srcImage,
             null,
-            Rect( destImgX, destImgY, destImgX + destImgWidth, destImgY + destImgHeight ),
+            Rect(destImgX, destImgY, destImgX + destImgWidth, destImgY + destImgHeight),
             null
         )
 
@@ -159,10 +177,13 @@ class MainActivity :
             bitmap = BitmapFactory.decodeStream(inputStream) ?: return null
 
             inputStream = contentResolver.openInputStream(uri) ?: return null
-            val exif = ExifInterface(inputStream) ?: return bitmap
+            val exif = ExifInterface(inputStream)
 
             val rotate =
-                when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
+                when (exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL
+                )) {
                     ExifInterface.ORIENTATION_ROTATE_90 -> 90
                     ExifInterface.ORIENTATION_ROTATE_180 -> 180
                     ExifInterface.ORIENTATION_ROTATE_270 -> 270
@@ -172,7 +193,15 @@ class MainActivity :
             if (rotate != 0) {
                 val matrix = Matrix()
                 matrix.postRotate(rotate.toFloat())
-                val rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                val rotatedBitmap = Bitmap.createBitmap(
+                    bitmap,
+                    0,
+                    0,
+                    bitmap.width,
+                    bitmap.height,
+                    matrix,
+                    true
+                )
                 if (rotatedBitmap != null)
                     bitmap = rotatedBitmap
             }
@@ -203,7 +232,7 @@ class MainActivity :
     private fun openImage() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             .putExtra("android.content.extra.SHOW_ADVANCED", true)
-            .addFlags( Intent.FLAG_GRANT_READ_URI_PERMISSION )
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .setType("image/*")
         startActivityForResult(intent, INTENT_OPEN_IMAGE)
     }
@@ -230,7 +259,11 @@ class MainActivity :
         return false
     }
 
-    private fun handleRequestPermissions(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    private fun handleRequestPermissions(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         var allowedAll = grantResults.size >= PERMISSIONS.size
 
         if (grantResults.size >= PERMISSIONS.size) {
@@ -246,10 +279,17 @@ class MainActivity :
         else exitApp()
     }
 
+    private fun selectColor( initColor: Int, l: (Int)->Unit ) {
+        val dialog = ColorPicker(this, Color.red(initColor), Color.green(initColor), Color.blue(initColor))
+        dialog.enableAutoClose()
+        dialog.setCallback { color -> l.invoke(color) }
+        dialog.show()
+    }
+
     private fun onPermissionsAllowed() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        binding = ActivityMainBinding.inflate( layoutInflater )
+        binding = ActivityMainBinding.inflate(layoutInflater)
 
         binding.imageView.setOnClickListener { if (null == srcImage) openImage() }
 
@@ -269,6 +309,32 @@ class MainActivity :
 
         binding.txtBorder.setOnLongClickListener {
             binding.seekBarBoder.progress = DEFAULT_BORDER
+            true
+        }
+
+        binding.buttonBackgroundColor.setOnClickListener {
+            selectColor( backgroundColor ) { color ->
+                backgroundColor = color
+                updateImage()
+            }
+        }
+
+        binding.buttonBackgroundColor.setOnLongClickListener {
+            backgroundColor = DEFAULT_BACKGROUND_COLOR
+            updateImage()
+            true
+        }
+
+        binding.buttonBorderColor.setOnClickListener {
+            selectColor( borderColor ) { color ->
+                borderColor = color
+                updateImage()
+            }
+        }
+
+        binding.buttonBorderColor.setOnLongClickListener {
+            borderColor = DEFAULT_BORDER_COLOR
+            updateImage()
             true
         }
 
