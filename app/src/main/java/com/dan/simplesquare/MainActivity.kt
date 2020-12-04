@@ -1,9 +1,13 @@
 package com.dan.simplesquare
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -18,9 +22,12 @@ class MainActivity : AppCompatActivity() {
         )
 
         const val REQUEST_PERMISSIONS = 1
+        const val INTENT_OPEN_IMAGE = 2
     }
 
     private lateinit var binding: ActivityMainBinding
+    private var srcImage: Bitmap? = null
+    private lateinit var menuSave: MenuItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,16 +41,47 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        menuSave = menu.findItem(R.id.save)
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             android.R.id.home -> {
-                setResult(0)
-                finish()
+                exitApp()
+                return true
+            }
+
+            R.id.open -> {
+                openImage()
                 return true
             }
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+
+        if (INTENT_OPEN_IMAGE == requestCode && RESULT_OK == resultCode && null != intent && intent.data is Uri) {
+            val uri = intent.data as Uri
+        }
+    }
+
+    private fun openImage() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            .putExtra("android.content.extra.SHOW_ADVANCED", true)
+            .addFlags( Intent.FLAG_GRANT_READ_URI_PERMISSION )
+            .setType("image/*")
+        startActivityForResult(intent, INTENT_OPEN_IMAGE)
+    }
+
+    private fun exitApp() {
+        setResult(0)
+        finish()
     }
 
     private fun askPermissions(): Boolean {
@@ -69,12 +107,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if( allowedAll ) {
-            onPermissionsAllowed()
-        } else {
-            setResult(0)
-            finish()
-        }
+        if( allowedAll ) onPermissionsAllowed()
+        else exitApp()
     }
 
     private fun onPermissionsAllowed() {
