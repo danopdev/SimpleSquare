@@ -32,8 +32,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var srcImage: Bitmap? = null
     private lateinit var menuSave: MenuItem
-    private var margin = 0
-    private var border = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,8 +91,8 @@ class MainActivity : AppCompatActivity() {
             else targetSize_
 
         val ratio = targetSize_.toFloat() / IMG_WORK_SIZE
-        val margin = (this.margin * ratio).toInt()
-        val border = (this.border * ratio).toInt()
+        val margin = (binding.seekBarMargin.progress * ratio).toInt()
+        val border = (binding.seekBarBoder.progress * ratio).toInt()
         val fullMargin = margin + border
 
         if (targetSize_ <= 0) targetSize += 2 * fullMargin
@@ -186,12 +184,10 @@ class MainActivity : AppCompatActivity() {
         val srcImage = loadImageFromUri(uri)
         this.srcImage = srcImage
         if (null == srcImage) {
-            binding.root.isEnabled = false
             menuSave.isEnabled = false
             return
         }
 
-        binding.root.isEnabled = true
         menuSave.isEnabled = true
         updateImage()
     }
@@ -241,7 +237,9 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate( layoutInflater )
 
-        binding.root.isEnabled = false
+        binding.imageView.setOnClickListener {
+            if (null == srcImage) openImage()
+        }
 
         setContentView(binding.root)
     }
