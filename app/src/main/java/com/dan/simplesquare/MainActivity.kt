@@ -193,17 +193,8 @@ class MainActivity :
             if (rotate != 0) {
                 val matrix = Matrix()
                 matrix.postRotate(rotate.toFloat())
-                val rotatedBitmap = Bitmap.createBitmap(
-                    bitmap,
-                    0,
-                    0,
-                    bitmap.width,
-                    bitmap.height,
-                    matrix,
-                    true
-                )
-                if (rotatedBitmap != null)
-                    bitmap = rotatedBitmap
+                val rotatedBitmap = Bitmap.createBitmap( bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                if (rotatedBitmap != null) bitmap = rotatedBitmap
             }
 
         } catch (e: Exception) {
@@ -259,11 +250,7 @@ class MainActivity :
         return false
     }
 
-    private fun handleRequestPermissions(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+    private fun handleRequestPermissions( requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         var allowedAll = grantResults.size >= PERMISSIONS.size
 
         if (grantResults.size >= PERMISSIONS.size) {
