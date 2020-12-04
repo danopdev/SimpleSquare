@@ -209,6 +209,12 @@ class MainActivity :
         finish()
     }
 
+    private fun updateValues() {
+        binding.txtBorderValue.text = binding.seekBarBoder.progress.toString()
+        binding.txtMarginValue.text = binding.seekBarMargin.progress.toString()
+        binding.txtContrastValue.text = binding.seekBarContrast.progress.toString()
+    }
+
     private fun askPermissions(): Boolean {
         for (permission in PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -246,10 +252,13 @@ class MainActivity :
         binding.seekBarMargin.setOnSeekBarChangeListener(this)
         binding.seekBarContrast.setOnSeekBarChangeListener(this)
 
+        updateValues()
+
         setContentView(binding.root)
     }
 
     override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+        updateValues()
         updateImage()
     }
 
