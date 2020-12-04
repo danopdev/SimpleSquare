@@ -127,15 +127,15 @@
 
                             <ImageButton
                                 android:id="@+id/buttonBorderColor"
-                                android:layout_width="wrap_content"
+                                android:layout_width="32dp"
                                 android:layout_height="32dp"
                                 app:srcCompat="@drawable/ic_launcher_foreground" />
                         </FrameLayout>
                     </TableRow>
 
                     <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:minHeight="32dp"
                         android:orientation="vertical">
@@ -168,7 +168,21 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="Color" />
+
                         </RadioGroup>
+
+                        <FrameLayout
+                            android:layout_width="@android:dimen/app_icon_size"
+                            android:backgroundTint="@color/teal_200"
+                            android:minHeight="32dp"
+                            android:padding="1dp">
+
+                            <ImageButton
+                                android:id="@+id/buttonBackgroundColor"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                app:srcCompat="@drawable/ic_launcher_foreground" />
+                        </FrameLayout>
 
                     </TableRow>
 
