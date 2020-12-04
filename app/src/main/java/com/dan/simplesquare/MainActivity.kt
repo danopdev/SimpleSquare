@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.dan.simplesquare.databinding.ActivityMainBinding
@@ -33,6 +34,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            android.R.id.home -> {
+                setResult(0)
+                finish()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun askPermissions(): Boolean {
         for (permission in PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -59,12 +72,14 @@ class MainActivity : AppCompatActivity() {
         if( allowedAll ) {
             onPermissionsAllowed()
         } else {
-            setResult(0);
-            finish();
+            setResult(0)
+            finish()
         }
     }
 
     private fun onPermissionsAllowed() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         binding = ActivityMainBinding.inflate( layoutInflater )
 
         setContentView(binding.root)
