@@ -31,6 +31,7 @@ class MainActivity :
         )
 
         const val DEFAULT_CONTRAST = 100
+        const val DEFAULT_SATURATION = 100
         const val DEFAULT_MARGIN = 10
         const val DEFAULT_BORDER = 0
 
@@ -125,9 +126,9 @@ class MainActivity :
     }
 
     private fun adjustSaturation(colorMatrix: ColorMatrix, valueInt: Int) {
-        if (valueInt == 0) return
+        if (valueInt == 100) return
 
-        val value = valueInt.toFloat()
+        val value = (valueInt - 100).toFloat()
         val x = 1 + if (value > 0) 3 * value / 100 else value / 100
         val lumR = 0.3086f
         val lumG = 0.6094f
@@ -196,6 +197,7 @@ class MainActivity :
 
         val colorMatrix = ColorMatrix()
         adjustContrast( colorMatrix, binding.seekBarContrast.progress)
+        adjustSaturation( colorMatrix, binding.seekBarSaturation.progress )
         val filterPaint = Paint()
         filterPaint.colorFilter = ColorMatrixColorFilter(colorMatrix)
 
@@ -339,9 +341,15 @@ class MainActivity :
         binding.seekBarBoder.setOnSeekBarChangeListener(this)
         binding.seekBarMargin.setOnSeekBarChangeListener(this)
         binding.seekBarContrast.setOnSeekBarChangeListener(this)
+        binding.seekBarSaturation.setOnSeekBarChangeListener(this)
 
         binding.txtContrast.setOnLongClickListener {
             binding.seekBarContrast.progress = DEFAULT_CONTRAST
+            true
+        }
+
+        binding.txtSaturation.setOnLongClickListener {
+            binding.seekBarSaturation.progress = DEFAULT_SATURATION
             true
         }
 
