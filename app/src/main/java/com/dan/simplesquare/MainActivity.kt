@@ -3,7 +3,8 @@ package com.dan.simplesquare
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
+import android.graphics.*
+import android.media.ExifInterface
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.view.MenuItem
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.dan.simplesquare.databinding.ActivityMainBinding
+import java.lang.Integer.max
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,11 +25,15 @@ class MainActivity : AppCompatActivity() {
 
         const val REQUEST_PERMISSIONS = 1
         const val INTENT_OPEN_IMAGE = 2
+
+        const val IMG_WORK_SIZE = 1080
     }
 
     private lateinit var binding: ActivityMainBinding
     private var srcImage: Bitmap? = null
     private lateinit var menuSave: MenuItem
+    private var margin = 0
+    private var border = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,9 +72,128 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
 
-        if (INTENT_OPEN_IMAGE == requestCode && RESULT_OK == resultCode && null != intent && intent.data is Uri) {
-            val uri = intent.data as Uri
+        if (INTENT_OPEN_IMAGE == requestCode) {
+                if (RESULT_OK == resultCode && null != intent) {
+                    val uri = intent.data
+                    if (null != uri)
+                        loadImage( uri )
+                }
+            return
         }
+    }
+
+    private fun generateImage(targetSize_: Int): Bitmap? {
+        val srcImage = this.srcImage ?: return null
+        val srcImageWidth = srcImage.width
+        val srcImageHeight = srcImage.height
+        if (srcImageWidth <= 0 || srcImageHeight <= 0) return null
+
+        var targetSize =
+            if (targetSize_ <= 0) max(srcImageWidth, srcImageHeight)
+            else targetSize_
+
+        val ratio = targetSize_.toFloat() / IMG_WORK_SIZE
+        val margin = (this.margin * ratio).toInt()
+        val border = (this.border * ratio).toInt()
+        val fullMargin = margin + border
+
+        if (targetSize_ <= 0) targetSize += 2 * fullMargin
+
+        val destImgSize =
+            if (targetSize_ <= 0) max(srcImageWidth, srcImageHeight)
+            else targetSize - 2*fullMargin
+
+        val destImage = Bitmap.createBitmap( targetSize, targetSize, Bitmap.Config.ARGB_8888 )
+
+        val canvas = Canvas(destImage)
+        canvas.drawColor(Color.WHITE)
+
+        var destImgWidth: Int
+        var destImgHeight: Int
+
+        if (srcImageWidth > srcImageHeight) {
+            destImgWidth = destImgSize
+            destImgHeight = destImgSize * srcImageHeight / srcImageWidth
+        } else {
+            destImgHeight = destImgSize
+            destImgWidth = destImgSize * srcImageWidth / srcImageHeight
+        }
+
+        val destImgX = (targetSize - destImgWidth) / 2
+        val destImgY = (targetSize - destImgHeight) / 2
+
+        if (border > 0) {
+            val borderPaint = Paint()
+            borderPaint.style = Paint.Style.FILL
+            borderPaint.color = Color.BLACK
+            canvas.drawRect(
+                (destImgX - border).toFloat(),
+                (destImgY - border).toFloat(),
+                (destImgX + destImgWidth + 2 * border).toFloat(),
+                (destImgY + destImgHeight + 2 * border).toFloat(),
+                borderPaint
+            )
+        }
+
+        canvas.drawBitmap(
+            srcImage,
+            null,
+            Rect( destImgX, destImgY, destImgX + destImgWidth, destImgY + destImgHeight ),
+            null
+        )
+
+        return destImage
+    }
+
+    private fun loadImageFromUri(uri: Uri): Bitmap? {
+        var bitmap: Bitmap? = null
+
+        try {
+            var inputStream = contentResolver.openInputStream(uri) ?: return null
+            bitmap = BitmapFactory.decodeStream(inputStream) ?: return null
+
+            inputStream = contentResolver.openInputStream(uri) ?: return null
+            val exif = ExifInterface(inputStream) ?: return bitmap
+
+            val rotate =
+                when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> 90
+                    ExifInterface.ORIENTATION_ROTATE_180 -> 180
+                    ExifInterface.ORIENTATION_ROTATE_270 -> 270
+                    else -> 0
+                }
+
+            if (rotate != 0) {
+                val matrix = Matrix()
+                matrix.postRotate(rotate.toFloat())
+                val rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                if (rotatedBitmap != null)
+                    bitmap = rotatedBitmap
+            }
+
+        } catch (e: Exception) {
+        }
+
+        return bitmap
+    }
+
+    private fun updateImage() {
+        val destImage = generateImage(IMG_WORK_SIZE) ?: return
+        binding.imageView.setImageBitmap(destImage)
+    }
+
+    private fun loadImage(uri: Uri) {
+        val srcImage = loadImageFromUri(uri)
+        this.srcImage = srcImage
+        if (null == srcImage) {
+            binding.root.isEnabled = false
+            menuSave.isEnabled = false
+            return
+        }
+
+        binding.root.isEnabled = true
+        menuSave.isEnabled = true
+        updateImage()
     }
 
     private fun openImage() {
@@ -115,6 +240,8 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding = ActivityMainBinding.inflate( layoutInflater )
+
+        binding.root.isEnabled = false
 
         setContentView(binding.root)
     }
