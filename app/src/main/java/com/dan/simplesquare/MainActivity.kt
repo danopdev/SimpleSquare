@@ -94,16 +94,16 @@ class MainActivity :
             if (targetSize_ <= 0) max(srcImageWidth, srcImageHeight)
             else targetSize_
 
-        val ratio = targetSize_.toFloat() / IMG_WORK_SIZE
-        val margin = 2 * (binding.seekBarMargin.progress * ratio).toInt()
-        val border = 2 * (binding.seekBarBoder.progress * ratio).toInt()
+        val ratio = targetSize.toFloat() / IMG_WORK_SIZE
+        val margin = (binding.seekBarMargin.progress * ratio).toInt()
+        val border = (binding.seekBarBoder.progress * ratio).toInt()
         val fullMargin = margin + border
 
         if (targetSize_ <= 0) targetSize += 2 * fullMargin
 
         val destImgSize =
             if (targetSize_ <= 0) max(srcImageWidth, srcImageHeight)
-            else targetSize - 2*fullMargin
+            else targetSize - 2 * fullMargin
 
         val destImage = Bitmap.createBitmap( targetSize, targetSize, Bitmap.Config.ARGB_8888 )
 
