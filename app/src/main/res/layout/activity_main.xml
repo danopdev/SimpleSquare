@@ -142,21 +142,49 @@
                             android:id="@+id/txtBorderValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0" />
+                            android:text="0"
+                            android:textAlignment="textEnd" />
 
-                        <FrameLayout
-                            android:background="@color/teal_200"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:padding="1dp">
+                    </TableRow>
 
-                            <ImageButton
-                                android:id="@+id/buttonBorderColor"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:background="@color/black"
-                                app:srcCompat="@drawable/ic_launcher_foreground" />
-                        </FrameLayout>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:minHeight="32dp">
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:paddingLeft="16dp">
+
+                            <FrameLayout
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@color/teal_200"
+                                android:padding="1dp">
+
+                                <ImageButton
+                                    android:id="@+id/buttonBorderColor"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="30dp"
+                                    android:background="@color/black" />
+                            </FrameLayout>
+
+                            <CheckBox
+                                android:id="@+id/checkBox"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Shadow" />
+
+                        </LinearLayout>
+
                     </TableRow>
 
                     <TableRow
@@ -175,7 +203,7 @@
                             android:textStyle="bold" />
 
                         <RadioGroup
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:checkedButton="@id/rbBackgroundColor"
@@ -195,21 +223,21 @@
                                 android:layout_weight="1"
                                 android:text="Color" />
 
+                            <FrameLayout
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@color/teal_200"
+                                android:padding="1dp">
+
+                                <ImageButton
+                                    android:id="@+id/buttonBackgroundColor"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:background="@color/white"
+                                    app:srcCompat="@drawable/ic_launcher_foreground" />
+                            </FrameLayout>
+
                         </RadioGroup>
-
-                        <FrameLayout
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:background="@color/teal_200"
-                            android:padding="1dp">
-
-                            <ImageButton
-                                android:id="@+id/buttonBackgroundColor"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:background="@color/white"
-                                app:srcCompat="@drawable/ic_launcher_foreground" />
-                        </FrameLayout>
 
                     </TableRow>
 
