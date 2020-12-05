@@ -241,6 +241,28 @@
 
                     </TableRow>
 
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:minHeight="32dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtSaveSize"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Save size:"
+                            android:textAlignment="textEnd"
+                            android:textStyle="bold" />
+
+                        <Spinner
+                            android:id="@+id/spinnerSaveSize"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:entries="@array/save_sizes"
+                            android:spinnerMode="dropdown" />
+                    </TableRow>
                 </TableLayout>
 
             </LinearLayout>
