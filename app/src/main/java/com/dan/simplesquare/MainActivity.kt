@@ -334,11 +334,7 @@ class MainActivity :
         return false
     }
 
-    private fun handleRequestPermissions(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+    private fun handleRequestPermissions(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         var allowedAll = grantResults.size >= PERMISSIONS.size
 
         if (grantResults.size >= PERMISSIONS.size) {
