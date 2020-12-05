@@ -30,14 +30,6 @@ class MainActivity :
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
 
-        const val DEFAULT_CONTRAST = 100
-        const val DEFAULT_SATURATION = 100
-        const val DEFAULT_MARGIN = 10
-        const val DEFAULT_BORDER = 0
-
-        const val DEFAULT_BACKGROUND_COLOR = Color.WHITE
-        const val DEFAULT_BORDER_COLOR = Color.BLACK
-
         const val REQUEST_PERMISSIONS = 1
         const val INTENT_OPEN_IMAGE = 2
 
@@ -47,6 +39,7 @@ class MainActivity :
     private lateinit var binding: ActivityMainBinding
     private var srcImage: Bitmap? = null
     private lateinit var menuSave: MenuItem
+    private lateinit var settings: Settings
 
     private var backgroundColor: Int
             get() = (binding.buttonBackgroundColor.getBackground() as ColorDrawable).color
@@ -197,7 +190,6 @@ class MainActivity :
 
         val colorMatrix = ColorMatrix()
         adjustContrast( colorMatrix, binding.seekBarContrast.progress)
-        adjustSaturation( colorMatrix, binding.seekBarSaturation.progress )
         val filterPaint = Paint()
         filterPaint.colorFilter = ColorMatrixColorFilter(colorMatrix)
 
@@ -300,11 +292,7 @@ class MainActivity :
         return false
     }
 
-    private fun handleRequestPermissions(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+    private fun handleRequestPermissions(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         var allowedAll = grantResults.size >= PERMISSIONS.size
 
         if (grantResults.size >= PERMISSIONS.size) {
@@ -332,6 +320,8 @@ class MainActivity :
     }
 
     private fun onPermissionsAllowed() {
+        settings = Settings(this)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -341,25 +331,19 @@ class MainActivity :
         binding.seekBarBoder.setOnSeekBarChangeListener(this)
         binding.seekBarMargin.setOnSeekBarChangeListener(this)
         binding.seekBarContrast.setOnSeekBarChangeListener(this)
-        binding.seekBarSaturation.setOnSeekBarChangeListener(this)
 
         binding.txtContrast.setOnLongClickListener {
-            binding.seekBarContrast.progress = DEFAULT_CONTRAST
-            true
-        }
-
-        binding.txtSaturation.setOnLongClickListener {
-            binding.seekBarSaturation.progress = DEFAULT_SATURATION
+            binding.seekBarContrast.progress = Settings.DEFAULT_CONTRAST
             true
         }
 
         binding.txtMargin.setOnLongClickListener {
-            binding.seekBarMargin.progress = DEFAULT_MARGIN
+            binding.seekBarMargin.progress = Settings.DEFAULT_MARGIN
             true
         }
 
         binding.txtBorder.setOnLongClickListener {
-            binding.seekBarBoder.progress = DEFAULT_BORDER
+            binding.seekBarBoder.progress = Settings.DEFAULT_BORDER
             true
         }
 
@@ -370,23 +354,11 @@ class MainActivity :
             }
         }
 
-        binding.buttonBackgroundColor.setOnLongClickListener {
-            backgroundColor = DEFAULT_BACKGROUND_COLOR
-            updateImage()
-            true
-        }
-
         binding.buttonBorderColor.setOnClickListener {
             selectColor(borderColor) { color ->
                 borderColor = color
                 updateImage()
             }
-        }
-
-        binding.buttonBorderColor.setOnLongClickListener {
-            borderColor = DEFAULT_BORDER_COLOR
-            updateImage()
-            true
         }
 
         updateValues()
