@@ -28,7 +28,7 @@ class Settings(val activity: MainActivity) {
         const val DEFAULT_BACKGROUND_COLOR = Color.WHITE
 
         private const val SAVE_SIZE_KEY = "saveSize"
-        const val DEFAULT_SAVE_SIZE = -1
+        const val DEFAULT_SAVE_SIZE = 0
     }
 
     private var contrast_ = DEFAULT_CONTRAST
