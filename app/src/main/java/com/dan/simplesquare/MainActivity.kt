@@ -285,7 +285,7 @@ class MainActivity :
     private fun updateValues() {
         binding.txtBorderValue.text = binding.seekBarBoder.progress.toString()
         binding.txtMarginValue.text = binding.seekBarMargin.progress.toString()
-        binding.txtContrastValue.text = binding.seekBarContrast.progress.toString()
+        binding.txtContrastValue.text = (binding.seekBarContrast.progress - 100).toString()
     }
 
     private fun askPermissions(): Boolean {
