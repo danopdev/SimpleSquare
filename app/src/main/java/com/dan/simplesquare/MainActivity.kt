@@ -234,8 +234,13 @@ class MainActivity :
         } catch (e: Exception) {
         }
 
-        if(null != bitmap)
-            srcName = name
+        if(null != bitmap) {
+            val dotIndex = name.lastIndexOf('.')
+            if (dotIndex >= 0)
+                srcName = name.substring(0, dotIndex)
+            else
+                srcName = name
+        }
 
         return bitmap
     }
