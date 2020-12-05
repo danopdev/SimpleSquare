@@ -14,8 +14,10 @@ import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.documentfile.provider.DocumentFile
 import com.dan.simplesquare.databinding.ActivityMainBinding
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker
+import org.w3c.dom.Document
 import java.lang.Integer.max
 
 
@@ -38,6 +40,7 @@ class MainActivity :
 
     private lateinit var binding: ActivityMainBinding
     private var srcImage: Bitmap? = null
+    private var srcName: String = ""
     private lateinit var menuSave: MenuItem
     private lateinit var settings: Settings
 
@@ -204,6 +207,7 @@ class MainActivity :
     }
 
     private fun loadImageFromUri(uri: Uri): Bitmap? {
+        val name = DocumentFile.fromFile(uri).name ?: return null
         var bitmap: Bitmap? = null
 
         try {
@@ -241,6 +245,9 @@ class MainActivity :
 
         } catch (e: Exception) {
         }
+
+        if(null != bitmap)
+            srcName = name
 
         return bitmap
     }
