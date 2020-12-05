@@ -360,6 +360,12 @@ class MainActivity :
         binding.seekBarMargin.progress = settings.margin
         backgroundColor = settings.backgroundColor
         borderColor = settings.borderColor
+        binding.checkBorderShadow.isChecked = settings.borderShadow
+
+        when(settings.backgroundType) {
+            Settings.BACKGROUND_TYPE_BLUR -> binding.rgBackgroundType.check(binding.rbBackgroundBlur.id)
+            else -> binding.rgBackgroundType.check(binding.rbBackgroundColor.id)
+        }
 
         updateValues()
 

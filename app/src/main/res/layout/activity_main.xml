@@ -177,13 +177,12 @@
                                     android:background="@color/black" />
                             </FrameLayout>
 
-                            <Switch
-                                android:id="@+id/switchBorderShadow"
+                            <CheckBox
+                                android:id="@+id/checkBorderShadow"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="16dp"
                                 android:layout_weight="1"
-                                android:text="Shadows" />
+                                android:text="Shadow" />
 
                         </LinearLayout>
 
@@ -205,6 +204,7 @@
                             android:textStyle="bold" />
 
                         <RadioGroup
+                            android:id="@+id/rgBackgroundType"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
