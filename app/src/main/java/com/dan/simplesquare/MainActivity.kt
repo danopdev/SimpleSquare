@@ -177,7 +177,7 @@ class MainActivity :
         val destImgX = (targetSize - destImgWidth) / 2
         val destImgY = (targetSize - destImgHeight) / 2
 
-        if (binding.checkBorderShadow.isChecked) {
+        if (binding.rbBackgroundBlur.isChecked) {
             val blurPaint = Paint()
             blurPaint.maskFilter = BlurMaskFilter(16 * ratio, BlurMaskFilter.Blur.NORMAL)
 
@@ -201,6 +201,8 @@ class MainActivity :
                 blurPaint
             )
         }
+
+
 
         if (border > 0) {
             val borderPaint = Paint()
