@@ -314,7 +314,18 @@ class MainActivity :
     }
 
     private fun saveSettings() {
+        settings.contrast = binding.seekBarContrast.progress
+        settings.border = binding.seekBarBoder.progress
+        settings.margin = binding.seekBarMargin.progress
+        settings.backgroundColor = backgroundColor
+        settings.borderColor = borderColor
+        settings.borderShadow = binding.checkBorderShadow.isChecked
+        settings.backgroundType =
+            if (binding.rbBackgroundBlur.isChecked) Settings.BACKGROUND_TYPE_BLUR
+            else Settings.BACKGROUND_TYPE_COLOR
+        settings.saveSize = binding.spinnerSaveSize.selectedItemPosition
 
+        settings.save()
     }
 
     private fun onPermissionsAllowed() {
