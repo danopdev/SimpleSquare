@@ -177,11 +177,13 @@
                                     android:background="@color/black" />
                             </FrameLayout>
 
-                            <CheckBox
-                                android:id="@+id/checkBox"
+                            <Switch
+                                android:id="@+id/switchBorderShadow"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Shadow" />
+                                android:layout_marginLeft="16dp"
+                                android:layout_weight="1"
+                                android:text="Shadows" />
 
                         </LinearLayout>
 
