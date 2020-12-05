@@ -39,7 +39,6 @@ class MainActivity :
 
     private lateinit var binding: ActivityMainBinding
     private var srcImage: Bitmap? = null
-    private lateinit var shadowBitmap: Bitmap
     private var srcName: String = ""
     private lateinit var menuSave: MenuItem
     private lateinit var settings: Settings
@@ -213,7 +212,7 @@ class MainActivity :
                 (destImgY - border).toFloat(),
                 (destImgX + destImgWidth + border).toFloat(),
                 (destImgY + destImgHeight + border).toFloat(),
-                borderPaint
+                blurPaint
             )
         }
 
@@ -383,7 +382,6 @@ class MainActivity :
 
     private fun onPermissionsAllowed() {
         settings = Settings(this)
-        shadowBitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.shadow)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
