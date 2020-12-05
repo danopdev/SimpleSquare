@@ -202,7 +202,20 @@ class MainActivity :
             )
         }
 
+        if (binding.checkBorderShadow.isChecked) {
+            val blurPaint = Paint()
+            blurPaint.maskFilter = BlurMaskFilter(16 * ratio, BlurMaskFilter.Blur.NORMAL)
+            blurPaint.style = Paint.Style.FILL
+            blurPaint.color = Color.argb(200, 0, 0, 0)
 
+            canvas.drawRect(
+                (destImgX - border).toFloat(),
+                (destImgY - border).toFloat(),
+                (destImgX + destImgWidth + border).toFloat(),
+                (destImgY + destImgHeight + border).toFloat(),
+                borderPaint
+            )
+        }
 
         if (border > 0) {
             val borderPaint = Paint()
