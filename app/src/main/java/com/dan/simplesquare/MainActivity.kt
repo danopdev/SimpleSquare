@@ -422,6 +422,10 @@ class MainActivity :
             }
         }
 
+        binding.checkBorderShadow.setOnCheckedChangeListener { _, _ -> updateImage()  }
+
+        binding.rgBackgroundType.setOnCheckedChangeListener { _, _ -> updateImage()  }
+
         binding.seekBarContrast.progress = settings.contrast
         binding.seekBarBoder.progress = settings.border
         binding.seekBarMargin.progress = settings.margin
