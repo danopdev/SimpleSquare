@@ -229,15 +229,7 @@ class MainActivity :
             if (rotate != 0) {
                 val matrix = Matrix()
                 matrix.postRotate(rotate.toFloat())
-                val rotatedBitmap = Bitmap.createBitmap(
-                    bitmap,
-                    0,
-                    0,
-                    bitmap.width,
-                    bitmap.height,
-                    matrix,
-                    true
-                )
+                val rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
                 if (rotatedBitmap != null) bitmap = rotatedBitmap
             }
 
