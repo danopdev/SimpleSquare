@@ -313,6 +313,10 @@ class MainActivity :
         dialog.show()
     }
 
+    private fun saveSettings() {
+
+    }
+
     private fun onPermissionsAllowed() {
         settings = Settings(this)
 
@@ -366,6 +370,8 @@ class MainActivity :
             Settings.BACKGROUND_TYPE_BLUR -> binding.rgBackgroundType.check(binding.rbBackgroundBlur.id)
             else -> binding.rgBackgroundType.check(binding.rbBackgroundColor.id)
         }
+
+        binding.spinnerSaveSize.setSelection( settings.saveSize )
 
         updateValues()
 
