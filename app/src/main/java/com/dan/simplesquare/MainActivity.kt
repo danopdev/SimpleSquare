@@ -207,7 +207,7 @@ class MainActivity :
     }
 
     private fun loadImageFromUri(uri: Uri): Bitmap? {
-        val name = DocumentFile.fromFile(uri).name ?: return null
+        val name = DocumentFile.fromSingleUri(applicationContext, uri)?.name ?: return null
         var bitmap: Bitmap? = null
 
         try {
@@ -367,6 +367,12 @@ class MainActivity :
                 updateImage()
             }
         }
+
+        binding.seekBarContrast.progress = settings.contrast
+        binding.seekBarBoder.progress = settings.border
+        binding.seekBarMargin.progress = settings.margin
+        backgroundColor = settings.backgroundColor
+        borderColor = settings.borderColor
 
         updateValues()
 
