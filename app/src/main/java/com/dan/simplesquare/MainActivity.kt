@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
 import com.dan.simplesquare.databinding.ActivityMainBinding
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker
-import org.w3c.dom.Document
 import java.lang.Integer.max
 
 
@@ -111,11 +110,11 @@ class MainActivity :
         val translate = (-.5f * scale + .5f) * 255f
 
         val mat = floatArrayOf(
-                scale, 0f, 0f, 0f, translate,
-                0f, scale, 0f, 0f, translate,
-                0f, 0f, scale, 0f, translate,
-                0f, 0f, 0f, 1f, 0f
-            )
+            scale, 0f, 0f, 0f, translate,
+            0f, scale, 0f, 0f, translate,
+            0f, 0f, scale, 0f, translate,
+            0f, 0f, 0f, 1f, 0f
+        )
 
         colorMatrix.postConcat(ColorMatrix(mat))
     }
@@ -132,7 +131,8 @@ class MainActivity :
             lumR * (1 - x) + x, lumG * (1 - x), lumB * (1 - x), 0f, 0f,
             lumR * (1 - x), lumG * (1 - x) + x, lumB * (1 - x), 0f, 0f,
             lumR * (1 - x), lumG * (1 - x), lumB * (1 - x) + x, 0f, 0f,
-            0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 0f, 1f)
+            0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 0f, 1f
+        )
 
         colorMatrix.postConcat(ColorMatrix(mat))
     }
@@ -177,6 +177,31 @@ class MainActivity :
         val destImgX = (targetSize - destImgWidth) / 2
         val destImgY = (targetSize - destImgHeight) / 2
 
+        if (binding.checkBorderShadow.isChecked) {
+            val blurPaint = Paint()
+            blurPaint.maskFilter = BlurMaskFilter(16 * ratio, BlurMaskFilter.Blur.NORMAL)
+
+            var blurWidth: Int
+            var blurHeight: Int
+            if (srcImage.width > srcImage.height) {
+                blurHeight = targetSize
+                blurWidth = targetSize * srcImage.width / srcImage.height
+            } else {
+                blurWidth = targetSize
+                blurHeight = targetSize * srcImage.height / srcImage.width
+            }
+
+            var blurX = (targetSize - blurWidth) / 2
+            var blurY = (targetSize - blurHeight) / 2
+
+            canvas.drawBitmap(
+                srcImage,
+                null,
+                Rect(blurX, blurY, blurX + blurWidth, blurY + blurHeight),
+                blurPaint
+            )
+        }
+
         if (border > 0) {
             val borderPaint = Paint()
             borderPaint.style = Paint.Style.FILL
@@ -191,7 +216,7 @@ class MainActivity :
         }
 
         val colorMatrix = ColorMatrix()
-        adjustContrast( colorMatrix, binding.seekBarContrast.progress)
+        adjustContrast(colorMatrix, binding.seekBarContrast.progress)
         val filterPaint = Paint()
         filterPaint.colorFilter = ColorMatrixColorFilter(colorMatrix)
 
@@ -217,7 +242,10 @@ class MainActivity :
             val exif = ExifInterface(inputStream)
 
             val rotate =
-                when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
+                when (exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL
+                )) {
                     ExifInterface.ORIENTATION_ROTATE_90 -> 90
                     ExifInterface.ORIENTATION_ROTATE_180 -> 180
                     ExifInterface.ORIENTATION_ROTATE_270 -> 270
@@ -292,7 +320,11 @@ class MainActivity :
         return false
     }
 
-    private fun handleRequestPermissions(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    private fun handleRequestPermissions(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         var allowedAll = grantResults.size >= PERMISSIONS.size
 
         if (grantResults.size >= PERMISSIONS.size) {
@@ -389,7 +421,7 @@ class MainActivity :
             else -> binding.rgBackgroundType.check(binding.rbBackgroundColor.id)
         }
 
-        binding.spinnerSaveSize.setSelection( settings.saveSize )
+        binding.spinnerSaveSize.setSelection(settings.saveSize)
 
         updateValues()
 
