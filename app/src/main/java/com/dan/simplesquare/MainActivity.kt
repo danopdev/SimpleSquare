@@ -208,10 +208,10 @@ class MainActivity :
             blurPaint.color = Color.argb(200, 0, 0, 0)
 
             canvas.drawRect(
-                (destImgX - border).toFloat(),
-                (destImgY - border).toFloat(),
-                (destImgX + destImgWidth + border).toFloat(),
-                (destImgY + destImgHeight + border).toFloat(),
+                (destImgX - border - 10).toFloat(),
+                (destImgY - border - 10).toFloat(),
+                (destImgX + destImgWidth + border + 10).toFloat(),
+                (destImgY + destImgHeight + border + 10).toFloat(),
                 blurPaint
             )
         }
