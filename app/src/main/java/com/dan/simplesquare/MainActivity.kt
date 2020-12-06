@@ -249,7 +249,7 @@ class MainActivity :
             val paint = Paint()
             paint.isAntiAlias = true
             paint.isFilterBitmap = true
-            paint.color = Color.argb(200, 255, 255, 255)
+            paint.color = Color.argb(128, 255, 255, 255)
 
             canvas.drawBitmap(
                 scaledBitmap,
