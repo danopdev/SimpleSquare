@@ -141,14 +141,14 @@ class MainActivity :
             if (null != bitmap) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, Settings.SAVE_QUALITY, file.outputStream())
                 success = true
-                Toast.makeText(this, "Saved to: ${fileName}", Toast.LENGTH_LONG)
+                Toast.makeText(this, "Saved to: ${fileName}", Toast.LENGTH_LONG).show()
                 saveSettings()
             }
         } catch (e: Exception) {
         }
 
         if (!success) {
-            Toast.makeText(this, "Save failed !", Toast.LENGTH_LONG)
+            Toast.makeText(this, "Save failed !", Toast.LENGTH_LONG).show()
         }
     }
 
