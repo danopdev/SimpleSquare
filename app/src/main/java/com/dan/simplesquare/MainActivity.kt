@@ -8,6 +8,10 @@ import android.graphics.drawable.ColorDrawable
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
+import android.renderscript.Allocation
+import android.renderscript.Element
+import android.renderscript.RenderScript
+import android.renderscript.ScriptIntrinsicBlur
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SeekBar
@@ -43,6 +47,8 @@ class MainActivity :
     private var srcName: String = ""
     private lateinit var menuSave: MenuItem
     private lateinit var settings: Settings
+    private lateinit var rendererScript: RenderScript
+    private lateinit var rendererScriptBlur: ScriptIntrinsicBlur
 
     private var backgroundColor: Int
             get() = (binding.buttonBackgroundColor.getBackground() as ColorDrawable).color
@@ -135,20 +141,22 @@ class MainActivity :
             if (null != bitmap) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, Settings.SAVE_QUALITY, file.outputStream())
                 success = true
-                Toast.makeText(applicationContext, "Saved to: ${fileName}", Toast.LENGTH_LONG)
+                Toast.makeText(this, "Saved to: ${fileName}", Toast.LENGTH_LONG)
+                saveSettings()
             }
         } catch (e: Exception) {
         }
 
         if (!success) {
-            Toast.makeText(applicationContext, "Save failed !", Toast.LENGTH_LONG)
+            Toast.makeText(this, "Save failed !", Toast.LENGTH_LONG)
         }
     }
 
-    private fun adjustContrast(colorMatrix: ColorMatrix, value: Int) {
-        if (value == 100) return
+    private fun adjustContrast(colorMatrix: ColorMatrix, value: Float) {
+        //if (value == 100) return
 
-        var scale = 1f + value / 200f
+        //var scale = 1f + (value - 100) / 200f
+        val scale = 1f + value
         val translate = (-.5f * scale + .5f) * 255f
 
         val mat = floatArrayOf(
@@ -161,10 +169,7 @@ class MainActivity :
         colorMatrix.postConcat(ColorMatrix(mat))
     }
 
-    private fun adjustSaturation(colorMatrix: ColorMatrix, valueInt: Int) {
-        if (valueInt == 100) return
-
-        val value = (valueInt - 100).toFloat()
+    private fun adjustSaturation(colorMatrix: ColorMatrix, value: Float) {
         val x = 1 + if (value > 0) 3 * value / 100 else value / 100
         val lumR = 0.3086f
         val lumG = 0.6094f
@@ -220,9 +225,6 @@ class MainActivity :
         val destImgY = (targetSize - destImgHeight) / 2
 
         if (binding.rbBackgroundBlur.isChecked) {
-            val blurPaint = Paint()
-            blurPaint.maskFilter = BlurMaskFilter(16 * ratio, BlurMaskFilter.Blur.NORMAL)
-
             var blurWidth: Int
             var blurHeight: Int
             if (srcImage.width > srcImage.height) {
@@ -233,14 +235,27 @@ class MainActivity :
                 blurHeight = targetSize * srcImage.height / srcImage.width
             }
 
+            val scaledBitmap = Bitmap.createScaledBitmap( srcImage, blurWidth / 8, blurHeight / 8, true )
+            val inputRSBitmap = Allocation.createFromBitmap(rendererScript, scaledBitmap)
+            val outputRSBitmap = Allocation.createTyped(rendererScript, inputRSBitmap.getType());
+
+            rendererScriptBlur.setInput(inputRSBitmap)
+            rendererScriptBlur.forEach(outputRSBitmap)
+            outputRSBitmap.copyTo(scaledBitmap)
+
             var blurX = (targetSize - blurWidth) / 2
             var blurY = (targetSize - blurHeight) / 2
 
+            val paint = Paint()
+            paint.isAntiAlias = true
+            paint.isFilterBitmap = true
+            paint.color = Color.argb(200, 255, 255, 255)
+
             canvas.drawBitmap(
-                srcImage,
+                scaledBitmap,
                 null,
                 Rect(blurX, blurY, blurX + blurWidth, blurY + blurHeight),
-                blurPaint
+                paint
             )
         }
 
@@ -273,7 +288,8 @@ class MainActivity :
         }
 
         val colorMatrix = ColorMatrix()
-        adjustContrast(colorMatrix, binding.seekBarContrast.progress)
+        if (100 != binding.seekBarContrast.progress)
+            adjustContrast(colorMatrix, (binding.seekBarContrast.progress - 100) / 200f)
         val filterPaint = Paint()
         filterPaint.colorFilter = ColorMatrixColorFilter(colorMatrix)
 
@@ -421,6 +437,9 @@ class MainActivity :
 
     private fun onPermissionsAllowed() {
         settings = Settings(this)
+        rendererScript = RenderScript.create(this)
+        rendererScriptBlur = ScriptIntrinsicBlur.create(rendererScript, Element.U8_4(rendererScript));
+        rendererScriptBlur.setRadius(8f)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
