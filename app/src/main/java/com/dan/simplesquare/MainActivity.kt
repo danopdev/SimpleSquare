@@ -11,12 +11,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
 import com.dan.simplesquare.databinding.ActivityMainBinding
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker
+import java.io.File
 import java.lang.Integer.max
 
 
@@ -24,7 +26,6 @@ class MainActivity :
     AppCompatActivity(),
     SeekBar.OnSeekBarChangeListener
 {
-
     companion object {
         val PERMISSIONS = arrayOf<String>(
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -84,6 +85,11 @@ class MainActivity :
                 openImage()
                 return true
             }
+
+            R.id.save -> {
+                saveImage()
+                return false
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -99,6 +105,43 @@ class MainActivity :
                         loadImage(uri)
                 }
             return
+        }
+    }
+
+    private fun saveImage() {
+        var success = false
+
+        try {
+            var fileName = srcName + ".jpeg"
+
+            var file = File(Settings.SAVE_FOLDER + "/" + fileName)
+            var counter = 0
+            while (file.exists() && counter < 998) {
+                counter++
+                fileName = srcName + "_%03d".format(counter) + ".jpeg"
+                file = File(Settings.SAVE_FOLDER + "/" + fileName)
+            }
+
+            file.parentFile?.mkdirs()
+
+            val sizeText = binding.spinnerSaveSize.selectedItem as String
+            var targetSize = 0
+            try {
+                targetSize = sizeText.toInt()
+            } catch (e: Exception) {
+            }
+
+            val bitmap = generateImage(targetSize)
+            if (null != bitmap) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, Settings.SAVE_QUALITY, file.outputStream())
+                success = true
+                Toast.makeText(applicationContext, "Saved to: ${fileName}", Toast.LENGTH_LONG)
+            }
+        } catch (e: Exception) {
+        }
+
+        if (!success) {
+            Toast.makeText(applicationContext, "Save failed !", Toast.LENGTH_LONG)
         }
     }
 

@@ -6,6 +6,9 @@ import android.graphics.Color
 class Settings(val activity: MainActivity) {
 
     companion object {
+        const val SAVE_FOLDER = "/storage/emulated/0/SimpleSquare"
+        const val SAVE_QUALITY = 90
+
         const val BACKGROUND_TYPE_COLOR = 0
         const val BACKGROUND_TYPE_BLUR = 1
 
