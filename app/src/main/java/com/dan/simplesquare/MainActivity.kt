@@ -153,9 +153,6 @@ class MainActivity :
     }
 
     private fun adjustContrast(colorMatrix: ColorMatrix, value: Float) {
-        //if (value == 100) return
-
-        //var scale = 1f + (value - 100) / 200f
         val scale = 1f + value
         val translate = (-.5f * scale + .5f) * 255f
 
