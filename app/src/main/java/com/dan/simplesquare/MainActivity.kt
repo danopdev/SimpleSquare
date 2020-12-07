@@ -1,6 +1,7 @@
 package com.dan.simplesquare
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
@@ -22,6 +23,9 @@ import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
 import com.dan.simplesquare.databinding.ActivityMainBinding
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.Integer.max
 
@@ -115,40 +119,52 @@ class MainActivity :
     }
 
     private fun saveImage() {
-        var success = false
+        BusyDialog.show(supportFragmentManager)
 
-        try {
+        GlobalScope.launch(Dispatchers.IO) {
             var fileName = srcName + ".jpeg"
+            var success = false
 
-            var file = File(Settings.SAVE_FOLDER + "/" + fileName)
-            var counter = 0
-            while (file.exists() && counter < 998) {
-                counter++
-                fileName = srcName + "_%03d".format(counter) + ".jpeg"
-                file = File(Settings.SAVE_FOLDER + "/" + fileName)
-            }
-
-            file.parentFile?.mkdirs()
-
-            val sizeText = binding.spinnerSaveSize.selectedItem as String
-            var targetSize = 0
             try {
-                targetSize = sizeText.toInt()
+                var file = File(Settings.SAVE_FOLDER + "/" + fileName)
+                var counter = 0
+                while (file.exists() && counter < 998) {
+                    counter++
+                    fileName = srcName + "_%03d".format(counter) + ".jpeg"
+                    file = File(Settings.SAVE_FOLDER + "/" + fileName)
+                }
+
+                file.parentFile?.mkdirs()
+
+                val sizeText = binding.spinnerSaveSize.selectedItem as String
+                var targetSize = 0
+                try {
+                    targetSize = sizeText.toInt()
+                } catch (e: Exception) {
+                }
+
+                val bitmap = generateImage(targetSize)
+                if (null != bitmap) {
+                    bitmap.compress(
+                        Bitmap.CompressFormat.JPEG,
+                        Settings.SAVE_QUALITY,
+                        file.outputStream()
+                    )
+
+                    success = true
+                    saveSettings()
+                }
             } catch (e: Exception) {
             }
 
-            val bitmap = generateImage(targetSize)
-            if (null != bitmap) {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, Settings.SAVE_QUALITY, file.outputStream())
-                success = true
-                Toast.makeText(this, "Saved to: ${fileName}", Toast.LENGTH_LONG).show()
-                saveSettings()
+            runOnUiThread {
+                BusyDialog.dismiss()
+                if (success) {
+                    Toast.makeText(applicationContext, "Saved to: ${fileName}", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(applicationContext, "Save failed !", Toast.LENGTH_LONG).show()
+                }
             }
-        } catch (e: Exception) {
-        }
-
-        if (!success) {
-            Toast.makeText(this, "Save failed !", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -349,15 +365,22 @@ class MainActivity :
     }
 
     private fun loadImage(uri: Uri) {
-        val srcImage = loadImageFromUri(uri)
-        this.srcImage = srcImage
-        if (null == srcImage) {
-            menuSave.isEnabled = false
-            return
-        }
+        BusyDialog.show(supportFragmentManager)
 
-        menuSave.isEnabled = true
-        updateImage()
+        GlobalScope.launch(Dispatchers.IO) {
+            val srcImageNew = loadImageFromUri(uri)
+
+            runOnUiThread {
+                srcImage = srcImageNew
+                if (null == srcImage) {
+                    menuSave.isEnabled = false
+                } else {
+                    menuSave.isEnabled = true
+                    updateImage()
+                }
+                BusyDialog.dismiss()
+            }
+        }
     }
 
     private fun openImage() {
@@ -433,6 +456,7 @@ class MainActivity :
     }
 
     private fun onPermissionsAllowed() {
+        BusyDialog.create(this)
         settings = Settings(this)
         rendererScript = RenderScript.create(this)
         rendererScriptBlur = ScriptIntrinsicBlur.create(rendererScript, Element.U8_4(rendererScript));
