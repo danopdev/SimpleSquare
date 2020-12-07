@@ -289,8 +289,6 @@ class MainActivity :
             adjustContrast(colorMatrix, (binding.seekBarContrast.progress - 100) / 200f)
         val filterPaint = Paint()
         filterPaint.colorFilter = ColorMatrixColorFilter(colorMatrix)
-        filterPaint.isAntiAlias = true
-        filterPaint.isFilterBitmap = true
 
         canvas.drawBitmap(
             srcImage,
