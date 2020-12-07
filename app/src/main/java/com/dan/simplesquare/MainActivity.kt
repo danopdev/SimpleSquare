@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
@@ -53,6 +54,7 @@ class MainActivity :
     private lateinit var settings: Settings
     private lateinit var rendererScript: RenderScript
     private lateinit var rendererScriptBlur: ScriptIntrinsicBlur
+    private var initialUri: Uri? = null
 
     private var backgroundColor: Int
             get() = (binding.buttonBackgroundColor.getBackground() as ColorDrawable).color
@@ -64,15 +66,20 @@ class MainActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (null != intent && null != intent.action && Intent.ACTION_SEND.equals(intent.action)) {
+            val extraStream = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM)
+            if (null != extraStream)
+                initialUri = extraStream as Uri
+            else
+                exitApp()
+        }
+
         if (!askPermissions())
             onPermissionsAllowed()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             REQUEST_PERMISSIONS -> handleRequestPermissions(requestCode, permissions, grantResults)
         }
@@ -81,6 +88,11 @@ class MainActivity :
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         menuSave = menu.findItem(R.id.save)
+
+        if (null != initialUri) {
+            menu.findItem(R.id.open).isVisible = false
+        }
+
         return true
     }
 
@@ -522,6 +534,10 @@ class MainActivity :
         updateValues()
 
         setContentView(binding.root)
+
+        val initialUri = this.initialUri
+        if (null != initialUri)
+            loadImage(initialUri)
     }
 
     override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
