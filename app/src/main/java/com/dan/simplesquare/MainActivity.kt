@@ -288,7 +288,7 @@ class MainActivity :
             val blurPaint = Paint()
             blurPaint.maskFilter = BlurMaskFilter(16 * ratio, BlurMaskFilter.Blur.NORMAL)
             blurPaint.style = Paint.Style.FILL
-            blurPaint.color = Color.argb(200, 0, 0, 0)
+            blurPaint.color = Color.argb(192, 0, 0, 0)
 
             canvas.drawRect(
                 (destImgX - border - 10).toFloat(),
