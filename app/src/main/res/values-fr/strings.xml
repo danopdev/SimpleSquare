@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple Square</string>
+    <string name="cancel">Annuler</string>
+    <string name="select">Sélectionner</string>
+    <string name="contrast">Contraste:</string>
+    <string name="margin">Marge:</string>
+    <string name="border">Controur:</string>
+    <string name="shadow">Ombre</string>
+    <string name="background">Fond:</string>
+    <string name="blur">Brouiller</string>
+    <string name="color">Couleur</string>
+    <string name="save_size">Taille:</string>
+    <string name="open">Ouvrir</string>
+    <string name="save">Enregistrer</string>
+    <string name="save_ok_msg">Enregistré dans: </string>
+    <string name="save_failed_msg">Échec de la sauvegarde !</string>
+
+    <string-array name="save_sizes">
+        <item>Taille réelle</item>
+        <item>1920</item>
+        <item>1080</item>
+    </string-array>
+</resources>

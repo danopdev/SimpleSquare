@@ -171,9 +171,9 @@ class MainActivity :
             runOnUiThread {
                 BusyDialog.dismiss()
                 if (success) {
-                    Toast.makeText(applicationContext, "Saved to: ${fileName}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, getString(R.string.save_ok_msg) + fileName, Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(applicationContext, "Save failed !", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, getString(R.string.save_failed_msg), Toast.LENGTH_LONG).show()
                 }
             }
         }

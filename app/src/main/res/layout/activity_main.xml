@@ -64,7 +64,7 @@
                             android:id="@+id/txtContrast"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Contrast:"
+                            android:text="@string/contrast"
                             android:textAlignment="textEnd"
                             android:textStyle="bold" />
 
@@ -95,7 +95,7 @@
                             android:id="@+id/txtMargin"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Margin:"
+                            android:text="@string/margin"
                             android:textAlignment="textEnd"
                             android:textStyle="bold" />
 
@@ -126,7 +126,7 @@
                             android:id="@+id/txtBorder"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Border:"
+                            android:text="@string/border"
                             android:textAlignment="textEnd"
                             android:textStyle="bold" />
 
@@ -182,7 +182,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Shadow" />
+                                android:text="@string/shadow" />
 
                         </LinearLayout>
 
@@ -199,7 +199,7 @@
                             android:id="@+id/textView4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Background:"
+                            android:text="@string/background"
                             android:textAlignment="textEnd"
                             android:textStyle="bold" />
 
@@ -216,14 +216,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Blur" />
+                                android:text="@string/blur" />
 
                             <RadioButton
                                 android:id="@+id/rbBackgroundColor"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Color" />
+                                android:text="@string/color" />
 
                             <FrameLayout
                                 android:layout_width="32dp"
@@ -254,7 +254,7 @@
                             android:id="@+id/txtSaveSize"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Save size:"
+                            android:text="@string/save_size"
                             android:textAlignment="textEnd"
                             android:textStyle="bold" />
 
