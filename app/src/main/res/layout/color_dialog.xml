@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtColor"
+            android:layout_width="match_parent"
+            android:layout_height="150dp" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/teal_700" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:id="@+id/txtRed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:paddingRight="32dp"
+                android:text="0"
+                android:textAlignment="textEnd"
+                android:textColor="#FF0000"
+                android:textStyle="bold" />
+
+            <SeekBar
+                android:id="@+id/seekBarRed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foregroundTint="#FF0000"
+                android:max="255"
+                android:progress="100"
+                android:progressBackgroundTint="#FF0000"
+                android:progressBackgroundTintMode="src_over"
+                android:progressTint="#FF0000"
+                android:progressTintMode="src_atop"
+                android:thumbTint="#FF0000" />
+
+            <TextView
+                android:id="@+id/txtGreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:paddingRight="32dp"
+                android:text="0"
+                android:textAlignment="textEnd"
+                android:textColor="#00D000"
+                android:textStyle="bold" />
+
+            <SeekBar
+                android:id="@+id/seekBarGreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="255"
+                android:progress="100"
+                android:progressBackgroundTint="#00D000"
+                android:progressBackgroundTintMode="src_over"
+                android:progressTint="#00D000"
+                android:progressTintMode="src_atop"
+                android:thumbTint="#00D000" />
+
+            <TextView
+                android:id="@+id/txtBlue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:paddingRight="32dp"
+                android:text="0"
+                android:textAlignment="textEnd"
+                android:textColor="#0000FF"
+                android:textStyle="bold" />
+
+            <SeekBar
+                android:id="@+id/seekBarBlue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foregroundTint="#0000FF"
+                android:max="255"
+                android:progress="100"
+                android:progressBackgroundTint="#0000FF"
+                android:progressBackgroundTintMode="src_over"
+                android:progressTint="#0000FF"
+                android:progressTintMode="src_atop"
+                android:thumbTint="#0000FF" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingTop="32dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="16dp">
+
+                <Button
+                    android:id="@+id/btnCancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#FF0000"
+                    android:text="Cancel"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/btnSelect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:text="Select"
+                    android:textAllCaps="false" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</layout>

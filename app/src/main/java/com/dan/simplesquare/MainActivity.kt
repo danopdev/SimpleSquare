@@ -23,7 +23,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
 import com.dan.simplesquare.databinding.ActivityMainBinding
-import com.pes.androidmaterialcolorpickerdialog.ColorPicker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -441,15 +440,17 @@ class MainActivity :
         else exitApp()
     }
 
-    private fun selectColor(initColor: Int, l: (Int) -> Unit) {
-        val dialog = ColorPicker(
-            this, Color.red(initColor), Color.green(initColor), Color.blue(
-                initColor
-            )
-        )
-        dialog.enableAutoClose()
-        dialog.setCallback { color -> l.invoke(color) }
-        dialog.show()
+    private fun selectColor( forBackgroundColor: Boolean ) {
+        ColorDialog.show(
+            supportFragmentManager,
+            if (forBackgroundColor) backgroundColor else borderColor ) { color ->
+            if (forBackgroundColor) {
+                backgroundColor = color
+            } else {
+                borderColor = color
+            }
+            updateImage()
+        }
     }
 
     private fun saveSettings() {
@@ -499,22 +500,10 @@ class MainActivity :
             true
         }
 
-        binding.buttonBackgroundColor.setOnClickListener {
-            selectColor(backgroundColor) { color ->
-                backgroundColor = color
-                updateImage()
-            }
-        }
-
-        binding.buttonBorderColor.setOnClickListener {
-            selectColor(borderColor) { color ->
-                borderColor = color
-                updateImage()
-            }
-        }
+        binding.buttonBackgroundColor.setOnClickListener { selectColor(true) }
+        binding.buttonBorderColor.setOnClickListener {selectColor(false) }
 
         binding.checkBorderShadow.setOnCheckedChangeListener { _, _ -> updateImage()  }
-
         binding.rgBackgroundType.setOnCheckedChangeListener { _, _ -> updateImage()  }
 
         binding.seekBarContrast.progress = settings.contrast
