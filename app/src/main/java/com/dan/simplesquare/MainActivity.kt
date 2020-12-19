@@ -49,7 +49,7 @@ class MainActivity :
     private lateinit var binding: ActivityMainBinding
     private var srcImage: Bitmap? = null
     private var srcName: String = ""
-    private lateinit var menuSave: MenuItem
+    private var menuSave: MenuItem? = null
     private lateinit var settings: Settings
     private lateinit var rendererScript: RenderScript
     private lateinit var rendererScriptBlur: ScriptIntrinsicBlur
@@ -86,7 +86,11 @@ class MainActivity :
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
-        menuSave = menu.findItem(R.id.save)
+        val menuSave = menu.findItem(R.id.save)
+        this.menuSave = menuSave
+
+        if (null == this.srcImage)
+            menuSave.isEnabled = false
 
         if (null != initialUri) {
             menu.findItem(R.id.open).isVisible = false
@@ -384,9 +388,9 @@ class MainActivity :
             runOnUiThread {
                 srcImage = srcImageNew
                 if (null == srcImage) {
-                    menuSave.isEnabled = false
+                    menuSave?.isEnabled = false
                 } else {
-                    menuSave.isEnabled = true
+                    menuSave?.isEnabled = true
                     updateImage()
                 }
                 BusyDialog.dismiss()
