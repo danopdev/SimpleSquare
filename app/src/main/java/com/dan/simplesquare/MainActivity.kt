@@ -66,12 +66,15 @@ class MainActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (null != intent && null != intent.action && Intent.ACTION_SEND.equals(intent.action)) {
-            val extraStream = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM)
-            if (null != extraStream)
-                initialUri = extraStream as Uri
-            else
-                exitApp()
+        if (null != intent && null != intent.action) {
+            if (Intent.ACTION_SEND.equals(intent.action)) {
+                val extraStream = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM)
+                if (null != extraStream) {
+                    initialUri = extraStream as Uri
+                }
+            } else if(Intent.ACTION_VIEW.equals(intent.action)){
+                initialUri = intent.getData()
+            }
         }
 
         if (!askPermissions())
