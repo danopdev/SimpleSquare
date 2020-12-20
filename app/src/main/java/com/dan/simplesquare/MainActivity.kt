@@ -338,7 +338,7 @@ class MainActivity :
             adjustBrightness(colorMatrix, binding.seekBarBrighntess.progress - 100f)
 
         if (100 != binding.seekBarSaturation.progress)
-            adjustSaturation(colorMatrix, binding.seekBarSaturation.progress - 100f)
+            adjustSaturation(colorMatrix, (binding.seekBarSaturation.progress - 100f) / 2)
 
         val filterPaint = Paint()
         filterPaint.colorFilter = ColorMatrixColorFilter(colorMatrix)
