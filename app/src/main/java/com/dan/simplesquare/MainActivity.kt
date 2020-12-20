@@ -509,7 +509,7 @@ class MainActivity :
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        binding.imageView.setOnClickListener { if (null == srcImage) openImage() }
+        binding.imageView.setOnClickListener { openImage() }
 
         binding.seekBarBoder.setOnSeekBarChangeListener(this)
         binding.seekBarMargin.setOnSeekBarChangeListener(this)
