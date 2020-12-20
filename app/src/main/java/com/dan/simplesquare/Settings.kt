@@ -15,6 +15,12 @@ class Settings(val activity: MainActivity) {
         private const val CONTRAST_KEY = "contrast"
         const val DEFAULT_CONTRAST = 100
 
+        private const val BRIGHTNESS_KEY = "brightness"
+        const val DEFAULT_BRIGHTNESS = 100
+
+        private const val SATURATION_KEY = "saturation"
+        const val DEFAULT_SATURATION = 100
+
         private const val MARGIN_KEY = "margin"
         const val DEFAULT_MARGIN = 10
 
@@ -35,6 +41,8 @@ class Settings(val activity: MainActivity) {
     }
 
     private var contrast_ = DEFAULT_CONTRAST
+    private var brightness_ = DEFAULT_BRIGHTNESS
+    private var saturation_ = DEFAULT_SATURATION
     private var margin_ = DEFAULT_MARGIN
 
     private var border_ = DEFAULT_BORDER
@@ -53,6 +61,22 @@ class Settings(val activity: MainActivity) {
         set(value) {
             if (contrast_ == value) return
             contrast_ = value
+            dirty = true
+        }
+
+    var brightness: Int
+        get() = brightness_
+        set(value) {
+            if (brightness_ == value) return
+            brightness_ = value
+            dirty = true
+        }
+
+    var saturation: Int
+        get() = saturation_
+        set(value) {
+            if (saturation_ == value) return
+            saturation_ = value
             dirty = true
         }
 

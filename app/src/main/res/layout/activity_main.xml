@@ -92,6 +92,68 @@
                         android:minHeight="32dp">
 
                         <TextView
+                            android:id="@+id/txtBrightness"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/brightness"
+                            android:textAlignment="textEnd"
+                            android:textStyle="bold" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarBrighntess"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:max="200"
+                            android:progress="100" />
+
+                        <TextView
+                            android:id="@+id/txtBrightnessValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAlignment="textEnd" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:minHeight="32dp">
+
+                        <TextView
+                            android:id="@+id/txtSaturation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/saturation"
+                            android:textAlignment="textEnd"
+                            android:textStyle="bold" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarSaturation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:max="200"
+                            android:progress="100" />
+
+                        <TextView
+                            android:id="@+id/txtSaturationValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAlignment="textEnd" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:minHeight="32dp">
+
+                        <TextView
                             android:id="@+id/txtMargin"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

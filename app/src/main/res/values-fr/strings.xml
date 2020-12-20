@@ -4,6 +4,8 @@
     <string name="cancel">Annuler</string>
     <string name="select">Sélectionner</string>
     <string name="contrast">Contraste:</string>
+    <string name="brightness">Luminosité:</string>
+    <string name="saturation">Saturation:</string>
     <string name="margin">Marge:</string>
     <string name="border">Controur:</string>
     <string name="shadow">Ombre</string>

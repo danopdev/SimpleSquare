@@ -200,6 +200,17 @@ class MainActivity :
         colorMatrix.postConcat(ColorMatrix(mat))
     }
 
+    private fun adjustBrightness(colorMatrix: ColorMatrix, value: Float) {
+        val mat = floatArrayOf(
+            1f, 0f, 0f, 0f, value,
+            0f, 1f, 0f, 0f, value,
+            0f, 0f, 1f, 0f, value,
+            0f, 0f, 0f, 1f, 0f
+        )
+
+        colorMatrix.postConcat(ColorMatrix(mat))
+    }
+
     private fun adjustSaturation(colorMatrix: ColorMatrix, value: Float) {
         val x = 1 + if (value > 0) 3 * value / 100 else value / 100
         val lumR = 0.3086f
@@ -319,8 +330,16 @@ class MainActivity :
         }
 
         val colorMatrix = ColorMatrix()
+
         if (100 != binding.seekBarContrast.progress)
             adjustContrast(colorMatrix, (binding.seekBarContrast.progress - 100) / 200f)
+
+        if (100 != binding.seekBarBrighntess.progress)
+            adjustBrightness(colorMatrix, (binding.seekBarBrighntess.progress - 100) / 200f)
+
+        if (100 != binding.seekBarSaturation.progress)
+            adjustSaturation(colorMatrix, (binding.seekBarSaturation.progress - 100) / 200f)
+
         val filterPaint = Paint()
         filterPaint.colorFilter = ColorMatrixColorFilter(colorMatrix)
 
@@ -418,6 +437,8 @@ class MainActivity :
         binding.txtBorderValue.text = binding.seekBarBoder.progress.toString()
         binding.txtMarginValue.text = binding.seekBarMargin.progress.toString()
         binding.txtContrastValue.text = (binding.seekBarContrast.progress - 100).toString()
+        binding.txtBrightnessValue.text = (binding.seekBarBrighntess.progress - 100).toString()
+        binding.txtSaturationValue.text = (binding.seekBarSaturation.progress - 100).toString()
     }
 
     private fun askPermissions(): Boolean {
@@ -462,6 +483,8 @@ class MainActivity :
 
     private fun saveSettings() {
         settings.contrast = binding.seekBarContrast.progress
+        settings.brightness = binding.seekBarBrighntess.progress
+        settings.saturation = binding.seekBarSaturation.progress
         settings.border = binding.seekBarBoder.progress
         settings.margin = binding.seekBarMargin.progress
         settings.backgroundColor = backgroundColor
@@ -491,9 +514,21 @@ class MainActivity :
         binding.seekBarBoder.setOnSeekBarChangeListener(this)
         binding.seekBarMargin.setOnSeekBarChangeListener(this)
         binding.seekBarContrast.setOnSeekBarChangeListener(this)
+        binding.seekBarBrighntess.setOnSeekBarChangeListener(this)
+        binding.seekBarSaturation.setOnSeekBarChangeListener(this)
 
         binding.txtContrast.setOnLongClickListener {
             binding.seekBarContrast.progress = Settings.DEFAULT_CONTRAST
+            true
+        }
+
+        binding.txtBrightness.setOnLongClickListener {
+            binding.seekBarBrighntess.progress = Settings.DEFAULT_BRIGHTNESS
+            true
+        }
+
+        binding.txtSaturation.setOnLongClickListener {
+            binding.seekBarSaturation.progress = Settings.DEFAULT_SATURATION
             true
         }
 
@@ -514,6 +549,8 @@ class MainActivity :
         binding.rgBackgroundType.setOnCheckedChangeListener { _, _ -> updateImage()  }
 
         binding.seekBarContrast.progress = settings.contrast
+        binding.seekBarBrighntess.progress = settings.brightness
+        binding.seekBarSaturation.progress = settings.saturation
         binding.seekBarBoder.progress = settings.border
         binding.seekBarMargin.progress = settings.margin
         backgroundColor = settings.backgroundColor
