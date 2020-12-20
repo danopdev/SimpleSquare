@@ -83,7 +83,7 @@ class MainActivity :
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
-            REQUEST_PERMISSIONS -> handleRequestPermissions(requestCode, permissions, grantResults)
+            REQUEST_PERMISSIONS -> handleRequestPermissions(grantResults)
         }
     }
 
@@ -452,7 +452,7 @@ class MainActivity :
         return false
     }
 
-    private fun handleRequestPermissions(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    private fun handleRequestPermissions(grantResults: IntArray) {
         var allowedAll = grantResults.size >= PERMISSIONS.size
 
         if (grantResults.size >= PERMISSIONS.size) {
