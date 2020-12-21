@@ -92,7 +92,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:minHeight="32dp">
+                        android:minHeight="32dp"
+                        android:visibility="gone"
+                        tools:visibility="gone">
 
                         <TextView
                             android:id="@+id/txtBrightness"
@@ -100,22 +102,28 @@
                             android:layout_height="wrap_content"
                             android:text="@string/brightness"
                             android:textAlignment="textEnd"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            tools:visibility="gone" />
 
                         <SeekBar
-                            android:id="@+id/seekBarBrighntess"
+                            android:id="@+id/seekBarBrightness"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:max="200"
-                            android:progress="100" />
+                            android:progress="100"
+                            android:visibility="gone"
+                            tools:visibility="gone" />
 
                         <TextView
                             android:id="@+id/txtBrightnessValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0"
-                            android:textAlignment="textEnd" />
+                            android:textAlignment="textEnd"
+                            android:visibility="gone"
+                            tools:visibility="gone" />
 
                     </TableRow>
 
