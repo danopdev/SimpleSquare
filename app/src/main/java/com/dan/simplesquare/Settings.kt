@@ -139,7 +139,9 @@ class Settings(val activity: MainActivity) {
     init {
         val preferences = activity.getPreferences(Context.MODE_PRIVATE)
 
-        contrast_ = preferences.getInt(CONTRAST_KEY, contrast_)
+        //contrast_ = preferences.getInt(CONTRAST_KEY, contrast_)
+        //brightness_ = preferences.getInt(BRIGHTNESS_KEY, brightness_)
+        //saturation_ = preferences.getInt(BRIGHTNESS_KEY, saturation_)
         margin_ = preferences.getInt(MARGIN_KEY, margin_)
 
         border_ = preferences.getInt(BORDER_KEY, border_)
@@ -158,7 +160,9 @@ class Settings(val activity: MainActivity) {
         val preferences = activity.getPreferences(Context.MODE_PRIVATE)
         val editor = preferences.edit()
 
-        editor.putInt(CONTRAST_KEY, contrast_)
+        //editor.putInt(CONTRAST_KEY, contrast_)
+        //editor.putInt(BRIGHTNESS_KEY, brightness_)
+        //editor.putInt(SATURATION_KEY, saturation_)
         editor.putInt(MARGIN_KEY, margin_)
 
         editor.putInt(BORDER_KEY, border_)
