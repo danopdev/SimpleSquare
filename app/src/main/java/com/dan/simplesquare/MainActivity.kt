@@ -1,7 +1,7 @@
 package com.dan.simplesquare
 
 import android.Manifest
-import android.content.Context
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
@@ -10,6 +10,7 @@ import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.MediaStore
 import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
@@ -81,7 +82,11 @@ class MainActivity :
             onPermissionsAllowed()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         when (requestCode) {
             REQUEST_PERMISSIONS -> handleRequestPermissions(grantResults)
         }
@@ -169,8 +174,10 @@ class MainActivity :
                     success = true
                     saveSettings()
 
-                    //@Suppress("DEPRECATION")
-                    //MediaStore.Images.Media.insertImage( contentResolver, file.absolutePath, file.name, "SimpleSquare" )
+                    val values = ContentValues()
+                    values.put(MediaStore.Images.Media.DATA, file.absolutePath)
+                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                    contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
                 }
             } catch (e: Exception) {
             }
@@ -178,9 +185,17 @@ class MainActivity :
             runOnUiThread {
                 BusyDialog.dismiss()
                 if (success) {
-                    Toast.makeText(applicationContext, getString(R.string.save_ok_msg) + fileName, Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.save_ok_msg) + fileName,
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
-                    Toast.makeText(applicationContext, getString(R.string.save_failed_msg), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.save_failed_msg),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -277,7 +292,12 @@ class MainActivity :
                 blurHeight = targetSize * srcImage.height / srcImage.width
             }
 
-            val scaledBitmap = Bitmap.createScaledBitmap( srcImage, blurWidth / 8, blurHeight / 8, true )
+            val scaledBitmap = Bitmap.createScaledBitmap(
+                srcImage,
+                blurWidth / 8,
+                blurHeight / 8,
+                true
+            )
             val inputRSBitmap = Allocation.createFromBitmap(rendererScript, scaledBitmap)
             val outputRSBitmap = Allocation.createTyped(rendererScript, inputRSBitmap.getType());
 
@@ -378,7 +398,15 @@ class MainActivity :
             if (rotate != 0) {
                 val matrix = Matrix()
                 matrix.postRotate(rotate.toFloat())
-                val rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                val rotatedBitmap = Bitmap.createBitmap(
+                    bitmap,
+                    0,
+                    0,
+                    bitmap.width,
+                    bitmap.height,
+                    matrix,
+                    true
+                )
                 if (rotatedBitmap != null) bitmap = rotatedBitmap
             }
 
@@ -468,10 +496,11 @@ class MainActivity :
         else exitApp()
     }
 
-    private fun selectColor( forBackgroundColor: Boolean ) {
+    private fun selectColor(forBackgroundColor: Boolean) {
         ColorDialog.show(
             supportFragmentManager,
-            if (forBackgroundColor) backgroundColor else borderColor ) { color ->
+            if (forBackgroundColor) backgroundColor else borderColor
+        ) { color ->
             if (forBackgroundColor) {
                 backgroundColor = color
             } else {
@@ -502,7 +531,10 @@ class MainActivity :
         BusyDialog.create(this)
         settings = Settings(this)
         rendererScript = RenderScript.create(this)
-        rendererScriptBlur = ScriptIntrinsicBlur.create(rendererScript, Element.U8_4(rendererScript));
+        rendererScriptBlur = ScriptIntrinsicBlur.create(
+            rendererScript,
+            Element.U8_4(rendererScript)
+        );
         rendererScriptBlur.setRadius(8f)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
