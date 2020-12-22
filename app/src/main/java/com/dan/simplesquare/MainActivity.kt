@@ -162,14 +162,15 @@ class MainActivity :
 
                 val bitmap = generateImage(targetSize)
                 if (null != bitmap) {
-                    bitmap.compress(
-                        Bitmap.CompressFormat.JPEG,
-                        Settings.SAVE_QUALITY,
-                        file.outputStream()
-                    )
+                    val outputStream = file.outputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, Settings.SAVE_QUALITY, outputStream)
+                    outputStream.close()
 
                     success = true
                     saveSettings()
+
+                    //@Suppress("DEPRECATION")
+                    //MediaStore.Images.Media.insertImage( contentResolver, file.absolutePath, file.name, "SimpleSquare" )
                 }
             } catch (e: Exception) {
             }
