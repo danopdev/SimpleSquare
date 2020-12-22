@@ -92,8 +92,7 @@ class MainActivity :
         val menuSave = menu.findItem(R.id.save)
         this.menuSave = menuSave
 
-        if (null == this.srcImage)
-            menuSave.isEnabled = false
+        menuSave.isEnabled = null != this.srcImage
 
         if (null != initialUri) {
             menu.findItem(R.id.open).isVisible = false
