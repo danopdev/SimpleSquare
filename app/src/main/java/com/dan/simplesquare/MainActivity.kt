@@ -132,9 +132,7 @@ class MainActivity :
 
         if (INTENT_OPEN_IMAGE == requestCode) {
                 if (RESULT_OK == resultCode && null != intent) {
-                    val uri = intent.data
-                    if (null != uri)
-                        loadImage(uri)
+                    intent.data?.let { uri -> loadImage(uri) }
                 }
             return
         }
@@ -185,17 +183,9 @@ class MainActivity :
             runOnUiThread {
                 BusyDialog.dismiss()
                 if (success) {
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.save_ok_msg) + fileName,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(applicationContext, getString(R.string.save_ok_msg) + fileName, Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.save_failed_msg),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(applicationContext, getString(R.string.save_failed_msg), Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -412,10 +402,11 @@ class MainActivity :
 
         if(null != bitmap) {
             val dotIndex = name.lastIndexOf('.')
-            if (dotIndex >= 0)
+            if (dotIndex >= 0) {
                 srcName = name.substring(0, dotIndex)
-            else
+            } else {
                 srcName = name
+            }
         }
 
         return bitmap
@@ -494,10 +485,7 @@ class MainActivity :
     }
 
     private fun selectColor(forBackgroundColor: Boolean) {
-        ColorDialog.show(
-            supportFragmentManager,
-            if (forBackgroundColor) backgroundColor else borderColor
-        ) { color ->
+        ColorDialog.show(supportFragmentManager, if (forBackgroundColor) backgroundColor else borderColor) { color ->
             if (forBackgroundColor) {
                 backgroundColor = color
             } else {
@@ -531,7 +519,7 @@ class MainActivity :
         rendererScriptBlur = ScriptIntrinsicBlur.create(
             rendererScript,
             Element.U8_4(rendererScript)
-        );
+        )
         rendererScriptBlur.setRadius(8f)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
