@@ -173,6 +173,7 @@ class MainActivity :
                     saveSettings()
 
                     val values = ContentValues()
+                    @Suppress("DEPRECATION")
                     values.put(MediaStore.Images.Media.DATA, file.absolutePath)
                     values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
                     contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
