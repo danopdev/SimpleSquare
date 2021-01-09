@@ -385,10 +385,7 @@ class MainActivity :
             val exif = ExifInterface(inputStream)
 
             val rotate =
-                when (exif.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_NORMAL
-                )) {
+                when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
                     ExifInterface.ORIENTATION_ROTATE_90 -> 90
                     ExifInterface.ORIENTATION_ROTATE_180 -> 180
                     ExifInterface.ORIENTATION_ROTATE_270 -> 270
