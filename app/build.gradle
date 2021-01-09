@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.dan.simplesquare"
         minSdkVersion 24
-        targetSdkVersion 30
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
