@@ -360,7 +360,7 @@ class MainActivity :
         if (100 != binding.seekBarSaturation.progress)
             adjustSaturation(colorMatrix, (binding.seekBarSaturation.progress - 100f) / 2)
 
-        val filterPaint = Paint()
+        val filterPaint = Paint(Paint.FILTER_BITMAP_FLAG)
         filterPaint.colorFilter = ColorMatrixColorFilter(colorMatrix)
 
         canvas.drawBitmap(
