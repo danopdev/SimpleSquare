@@ -36,7 +36,7 @@ class MainActivity :
     SeekBar.OnSeekBarChangeListener
 {
     companion object {
-        val PERMISSIONS = arrayOf<String>(
+        val PERMISSIONS = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
@@ -57,24 +57,24 @@ class MainActivity :
     private var initialUri: Uri? = null
 
     private var backgroundColor: Int
-            get() = (binding.buttonBackgroundColor.getBackground() as ColorDrawable).color
+            get() = (binding.buttonBackgroundColor.background as ColorDrawable).color
             set(color) { binding.buttonBackgroundColor.setBackgroundColor(color) }
 
     private var borderColor: Int
-        get() = (binding.buttonBorderColor.getBackground() as ColorDrawable).color
+        get() = (binding.buttonBorderColor.background as ColorDrawable).color
         set(color) { binding.buttonBorderColor.setBackgroundColor(color) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (null != intent && null != intent.action) {
-            if (Intent.ACTION_SEND.equals(intent.action)) {
+            if (Intent.ACTION_SEND == intent.action) {
                 val extraStream = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM)
                 if (null != extraStream) {
                     initialUri = extraStream as Uri
                 }
-            } else if(Intent.ACTION_VIEW.equals(intent.action)){
-                initialUri = intent.getData()
+            } else if(Intent.ACTION_VIEW == intent.action){
+                initialUri = intent.data
             }
         }
 
@@ -142,7 +142,7 @@ class MainActivity :
         BusyDialog.show(supportFragmentManager)
 
         GlobalScope.launch(Dispatchers.IO) {
-            var fileName = srcName + ".jpeg"
+            var fileName = "${srcName}.jpeg"
             var success = false
 
             try {
@@ -244,7 +244,7 @@ class MainActivity :
 
         val ratio = targetSize.toFloat() / IMG_WORK_SIZE
         val margin = (binding.seekBarMargin.progress * ratio).toInt()
-        val border = (binding.seekBarBoder.progress * ratio).toInt()
+        val border = (binding.seekBarBorder.progress * ratio).toInt()
         val fullMargin = margin + border
 
         if (targetSize_ <= 0) targetSize += 2 * fullMargin
@@ -258,8 +258,8 @@ class MainActivity :
         val canvas = Canvas(destImage)
         canvas.drawColor(backgroundColor)
 
-        var destImgWidth: Int
-        var destImgHeight: Int
+        val destImgWidth: Int
+        val destImgHeight: Int
 
         if (srcImageWidth > srcImageHeight) {
             destImgWidth = destImgSize
@@ -273,8 +273,8 @@ class MainActivity :
         val destImgY = (targetSize - destImgHeight) / 2
 
         if (binding.rbBackgroundBlur.isChecked) {
-            var blurWidth: Int
-            var blurHeight: Int
+            val blurWidth: Int
+            val blurHeight: Int
             if (srcImage.width > srcImage.height) {
                 blurHeight = targetSize
                 blurWidth = targetSize * srcImage.width / srcImage.height
@@ -290,14 +290,14 @@ class MainActivity :
                 true
             )
             val inputRSBitmap = Allocation.createFromBitmap(rendererScript, scaledBitmap)
-            val outputRSBitmap = Allocation.createTyped(rendererScript, inputRSBitmap.getType());
+            val outputRSBitmap = Allocation.createTyped(rendererScript, inputRSBitmap.type)
 
             rendererScriptBlur.setInput(inputRSBitmap)
             rendererScriptBlur.forEach(outputRSBitmap)
             outputRSBitmap.copyTo(scaledBitmap)
 
-            var blurX = (targetSize - blurWidth) / 2
-            var blurY = (targetSize - blurHeight) / 2
+            val blurX = (targetSize - blurWidth) / 2
+            val blurY = (targetSize - blurHeight) / 2
 
             val paint = Paint()
             paint.isAntiAlias = true
@@ -451,7 +451,7 @@ class MainActivity :
     }
 
     private fun updateValues() {
-        binding.txtBorderValue.text = binding.seekBarBoder.progress.toString()
+        binding.txtBorderValue.text = binding.seekBarBorder.progress.toString()
         binding.txtMarginValue.text = binding.seekBarMargin.progress.toString()
         binding.txtContrastValue.text = (binding.seekBarContrast.progress - 100).toString()
         binding.txtBrightnessValue.text = (binding.seekBarBrightness.progress - 100).toString()
@@ -500,7 +500,7 @@ class MainActivity :
         settings.contrast = binding.seekBarContrast.progress
         settings.brightness = binding.seekBarBrightness.progress
         settings.saturation = binding.seekBarSaturation.progress
-        settings.border = binding.seekBarBoder.progress
+        settings.border = binding.seekBarBorder.progress
         settings.margin = binding.seekBarMargin.progress
         settings.backgroundColor = backgroundColor
         settings.borderColor = borderColor
@@ -529,7 +529,7 @@ class MainActivity :
 
         binding.imageView.setOnClickListener { openImage() }
 
-        binding.seekBarBoder.setOnSeekBarChangeListener(this)
+        binding.seekBarBorder.setOnSeekBarChangeListener(this)
         binding.seekBarMargin.setOnSeekBarChangeListener(this)
         binding.seekBarContrast.setOnSeekBarChangeListener(this)
         binding.seekBarBrightness.setOnSeekBarChangeListener(this)
@@ -556,7 +556,7 @@ class MainActivity :
         }
 
         binding.txtBorder.setOnLongClickListener {
-            binding.seekBarBoder.progress = Settings.DEFAULT_BORDER
+            binding.seekBarBorder.progress = Settings.DEFAULT_BORDER
             true
         }
 
@@ -569,7 +569,7 @@ class MainActivity :
         binding.seekBarContrast.progress = settings.contrast
         binding.seekBarBrightness.progress = settings.brightness
         binding.seekBarSaturation.progress = settings.saturation
-        binding.seekBarBoder.progress = settings.border
+        binding.seekBarBorder.progress = settings.border
         binding.seekBarMargin.progress = settings.margin
         backgroundColor = settings.backgroundColor
         borderColor = settings.borderColor

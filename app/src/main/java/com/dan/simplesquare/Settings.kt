@@ -3,7 +3,7 @@ package com.dan.simplesquare
 import android.content.Context
 import android.graphics.Color
 
-class Settings(val activity: MainActivity) {
+class Settings(private val activity: MainActivity) {
 
     companion object {
         const val SAVE_FOLDER = "/storage/emulated/0/SimpleSquare"
@@ -31,8 +31,8 @@ class Settings(val activity: MainActivity) {
         const val DEFAULT_BORDER_COLOR = Color.BLACK
         const val DEFAULT_BORDER_SHADOW = false
 
-        private const val BACKGROUNG_TYPE_KEY = "backgroundType"
-        private const val BACKGROUNG_COLOR_KEY = "backgroundColor"
+        private const val BACKGROUND_TYPE_KEY = "backgroundType"
+        private const val BACKGROUND_COLOR_KEY = "backgroundColor"
         const val DEFAULT_BACKGROUND_TYPE = BACKGROUND_TYPE_COLOR
         const val DEFAULT_BACKGROUND_COLOR = Color.WHITE
 
@@ -148,8 +148,8 @@ class Settings(val activity: MainActivity) {
         borderColor_ = preferences.getInt(BORDER_COLOR_KEY, borderColor_)
         borderShadow_ = preferences.getBoolean(BORDER_SHADOW_KEY, borderShadow_)
 
-        backgroundType_ = preferences.getInt(BACKGROUNG_TYPE_KEY, backgroundType_)
-        backgroundColor_ = preferences.getInt(BACKGROUNG_COLOR_KEY, backgroundColor_)
+        backgroundType_ = preferences.getInt(BACKGROUND_TYPE_KEY, backgroundType_)
+        backgroundColor_ = preferences.getInt(BACKGROUND_COLOR_KEY, backgroundColor_)
 
         saveSize_ = preferences.getInt(SAVE_SIZE_KEY, saveSize_)
     }
@@ -169,8 +169,8 @@ class Settings(val activity: MainActivity) {
         editor.putInt(BORDER_COLOR_KEY, borderColor_)
         editor.putBoolean(BORDER_SHADOW_KEY, borderShadow_)
 
-        editor.putInt(BACKGROUNG_TYPE_KEY, backgroundType_)
-        editor.putInt(BACKGROUNG_COLOR_KEY, backgroundColor_)
+        editor.putInt(BACKGROUND_TYPE_KEY, backgroundType_)
+        editor.putInt(BACKGROUND_COLOR_KEY, backgroundColor_)
 
         editor.putInt(SAVE_SIZE_KEY, saveSize_)
 

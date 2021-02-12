@@ -11,8 +11,6 @@ import com.dan.simplesquare.databinding.BusyDialogBinding
 
 class BusyDialog: DialogFragment() {
 
-    private var binding: BusyDialogBinding? = null
-
     companion object {
         private const val FRAGMENT_TAG = "busy"
         private var currentDialog: BusyDialog? = null
@@ -41,7 +39,6 @@ class BusyDialog: DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = BusyDialogBinding.inflate( inflater )
-        return binding.root
+        return BusyDialogBinding.inflate( inflater ).root
     }
 }
