@@ -403,10 +403,10 @@ class MainActivity :
 
         if(null != bitmap) {
             val dotIndex = name.lastIndexOf('.')
-            if (dotIndex >= 0) {
-                srcName = name.substring(0, dotIndex)
+            srcName = if (dotIndex >= 0) {
+                name.substring(0, dotIndex)
             } else {
-                srcName = name
+                name
             }
         }
 

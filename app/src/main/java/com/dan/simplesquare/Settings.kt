@@ -174,7 +174,7 @@ class Settings(private val activity: MainActivity) {
 
         editor.putInt(SAVE_SIZE_KEY, saveSize_)
 
-        editor.commit()
+        editor.apply()
 
         dirty = false
     }
