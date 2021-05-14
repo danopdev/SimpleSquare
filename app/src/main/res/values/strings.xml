@@ -22,4 +22,9 @@
         <item>1920</item>
         <item>1080</item>
     </string-array>
+
+    <string-array name="shapes">
+        <item>1x1</item>
+        <item>4x5</item>
+    </string-array>
 </resources>

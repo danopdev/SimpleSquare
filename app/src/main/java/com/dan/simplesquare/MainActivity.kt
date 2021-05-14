@@ -15,11 +15,16 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
@@ -232,61 +237,87 @@ class MainActivity :
         colorMatrix.postConcat(ColorMatrix(mat))
     }
 
+    private fun getBestImgSize(destWidth: Int, destHeight: Int, imgWidth: Int, imgHeight: Int): Pair<Int, Int> {
+        val bestImgHeight = destWidth * imgHeight / imgWidth
+        if (bestImgHeight <= destHeight) return Pair(destWidth, bestImgHeight)
+        return Pair(destHeight * imgWidth / imgHeight, destHeight)
+    }
+
     private fun generateImage(targetSize_: Int): Bitmap? {
         val srcImage = this.srcImage ?: return null
         val srcImageWidth = srcImage.width
         val srcImageHeight = srcImage.height
         if (srcImageWidth <= 0 || srcImageHeight <= 0) return null
 
-        var targetSize =
-            if (targetSize_ <= 0) max(srcImageWidth, srcImageHeight)
-            else targetSize_
+        var shapeWidth = 1
+        var shapeHeight = 1
 
-        val ratio = targetSize.toFloat() / IMG_WORK_SIZE
+        when(settings.shape) {
+            Settings.SHAPE_4x5 -> {
+                shapeWidth = 4
+                shapeHeight = 5
+            }
+        }
+
+        var targetWidth: Int
+        var targetHeight: Int
+
+        if (targetSize_ >= 0) {
+            targetWidth = targetSize_
+            targetHeight = targetWidth * shapeHeight / shapeWidth
+        } else {
+            targetWidth = srcImageWidth
+            targetHeight = targetWidth * shapeHeight / shapeWidth
+
+            if (targetSize_ > srcImageHeight) {
+                targetHeight = srcImageHeight
+                targetWidth = targetHeight * shapeWidth / shapeHeight
+            }
+        }
+
+        Log.i("SIMPLE_SQUARE", "Shape: ${shapeWidth} x ${shapeHeight}")
+        Log.i("SIMPLE_SQUARE", "Target: ${targetWidth} x ${targetHeight}")
+
+        val ratio = targetWidth.toFloat() / IMG_WORK_SIZE
         val margin = (binding.seekBarMargin.progress * ratio).toInt()
         val border = (binding.seekBarBorder.progress * ratio).toInt()
         val fullMargin = margin + border
 
-        if (targetSize_ <= 0) targetSize += 2 * fullMargin
+        if (targetSize_ <= 0) {
+            targetWidth += 2 * fullMargin
+            targetHeight += 2 * fullMargin
+        }
 
-        val destImgSize =
-            if (targetSize_ <= 0) max(srcImageWidth, srcImageHeight)
-            else targetSize - 2 * fullMargin
-
-        val destImage = Bitmap.createBitmap(targetSize, targetSize, Bitmap.Config.ARGB_8888)
+        val destImage = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888)
 
         val canvas = Canvas(destImage)
         canvas.drawColor(backgroundColor)
 
-        val destImgWidth: Int
-        val destImgHeight: Int
+        var destImgWidth = targetWidth
+        var destImgHeight = targetHeight
 
-        if (srcImageWidth > srcImageHeight) {
-            destImgWidth = destImgSize
-            destImgHeight = destImgSize * srcImageHeight / srcImageWidth
-        } else {
-            destImgHeight = destImgSize
-            destImgWidth = destImgSize * srcImageWidth / srcImageHeight
+        if (targetSize_ > 0) {
+            destImgWidth -= 2 * fullMargin
+            destImgHeight -= 2 * fullMargin
         }
 
-        val destImgX = (targetSize - destImgWidth) / 2
-        val destImgY = (targetSize - destImgHeight) / 2
+        Log.i("SIMPLE_SQUARE", "Img: ${destImgWidth} x ${destImgHeight}")
+
+        getBestImgSize(destImgWidth, destImgHeight, srcImageWidth, srcImageHeight).let{ s ->
+            destImgWidth = s.first
+            destImgHeight = s.second
+        }
+
+        Log.i("SIMPLE_SQUARE", "Img: ${destImgWidth} x ${destImgHeight}")
+
+        val destImgX = (targetWidth - destImgWidth) / 2
+        val destImgY = (targetHeight - destImgHeight) / 2
 
         if (binding.rbBackgroundBlur.isChecked) {
-            val blurWidth: Int
-            val blurHeight: Int
-            if (srcImage.width > srcImage.height) {
-                blurHeight = targetSize
-                blurWidth = targetSize * srcImage.width / srcImage.height
-            } else {
-                blurWidth = targetSize
-                blurHeight = targetSize * srcImage.height / srcImage.width
-            }
-
             val scaledBitmap = Bitmap.createScaledBitmap(
                 srcImage,
-                blurWidth / 8,
-                blurHeight / 8,
+                destImgWidth / 8,
+                destImgHeight / 8,
                 true
             )
             val inputRSBitmap = Allocation.createFromBitmap(rendererScript, scaledBitmap)
@@ -296,8 +327,8 @@ class MainActivity :
             rendererScriptBlur.forEach(outputRSBitmap)
             outputRSBitmap.copyTo(scaledBitmap)
 
-            val blurX = (targetSize - blurWidth) / 2
-            val blurY = (targetSize - blurHeight) / 2
+            val blurX = (targetWidth - destImgWidth) / 2
+            val blurY = (targetHeight - destImgHeight) / 2
 
             val paint = Paint()
             paint.isAntiAlias = true
@@ -307,7 +338,7 @@ class MainActivity :
             canvas.drawBitmap(
                 scaledBitmap,
                 null,
-                Rect(blurX, blurY, blurX + blurWidth, blurY + blurHeight),
+                Rect(blurX, blurY, blurX + destImgWidth, blurY + destImgHeight),
                 paint
             )
         }
@@ -458,6 +489,22 @@ class MainActivity :
         binding.txtSaturationValue.text = (binding.seekBarSaturation.progress - 100).toString()
     }
 
+    private fun updateShape() {
+        val shapeStr = when(settings.shape) {
+            Settings.SHAPE_4x5 -> "4:5"
+            else -> "1:1"
+        }
+
+        val set = ConstraintSet()
+        set.clone(binding.frameMainLayout)
+        set.setDimensionRatio(binding.frameLayout.id, shapeStr)
+        set.applyTo(binding.frameMainLayout)
+
+        binding.frameMainLayout.invalidate()
+
+        updateImage()
+    }
+
     private fun askPermissions(): Boolean {
         for (permission in PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -582,6 +629,19 @@ class MainActivity :
 
         binding.spinnerSaveSize.setSelection(settings.saveSize)
 
+        binding.spinnerShape.setSelection(settings.shape)
+
+        binding.spinnerShape.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                settings.shape = position
+                updateShape()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+
+        updateShape()
         updateValues()
 
         setContentView(binding.root)

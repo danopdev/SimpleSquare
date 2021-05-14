@@ -38,6 +38,11 @@ class Settings(private val activity: MainActivity) {
 
         private const val SAVE_SIZE_KEY = "saveSize"
         const val DEFAULT_SAVE_SIZE = 0
+
+        const val SHAPE_1x1 = 0
+        const val SHAPE_4x5 = 1
+        private const val SHAPE_KEY = "shape"
+        const val DEFAULT_SHAPE = SHAPE_1x1
     }
 
     private var contrast_ = DEFAULT_CONTRAST
@@ -54,7 +59,17 @@ class Settings(private val activity: MainActivity) {
 
     private var saveSize_ = DEFAULT_SAVE_SIZE
 
+    private var shape_ = DEFAULT_SHAPE
+
     private var dirty = false
+
+    var shape: Int
+        get() = shape_
+        set(value) {
+            if (shape_ == value) return
+            shape_ = value
+            dirty = true
+        }
 
     var contrast: Int
         get() = contrast_
@@ -152,6 +167,8 @@ class Settings(private val activity: MainActivity) {
         backgroundColor_ = preferences.getInt(BACKGROUND_COLOR_KEY, backgroundColor_)
 
         saveSize_ = preferences.getInt(SAVE_SIZE_KEY, saveSize_)
+
+        shape_ = preferences.getInt(SHAPE_KEY, shape_)
     }
 
     fun save() {
@@ -173,6 +190,8 @@ class Settings(private val activity: MainActivity) {
         editor.putInt(BACKGROUND_COLOR_KEY, backgroundColor_)
 
         editor.putInt(SAVE_SIZE_KEY, saveSize_)
+
+        editor.putInt(SHAPE_KEY, shape_)
 
         editor.apply()
 
