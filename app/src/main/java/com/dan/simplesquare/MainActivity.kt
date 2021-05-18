@@ -314,10 +314,18 @@ class MainActivity :
         val destImgY = (targetHeight - destImgHeight) / 2
 
         if (binding.rbBackgroundBlur.isChecked) {
+            var blurWidth = targetWidth
+            var blurHeight = targetWidth * shapeHeight / shapeWidth
+
+            if (blurHeight < targetHeight) {
+                blurHeight = targetHeight
+                blurWidth = targetHeight * shapeWidth / shapeHeight
+            }
+
             val scaledBitmap = Bitmap.createScaledBitmap(
                 srcImage,
-                destImgWidth / 8,
-                destImgHeight / 8,
+                blurWidth / 8,
+                blurHeight / 8,
                 true
             )
             val inputRSBitmap = Allocation.createFromBitmap(rendererScript, scaledBitmap)
@@ -327,8 +335,8 @@ class MainActivity :
             rendererScriptBlur.forEach(outputRSBitmap)
             outputRSBitmap.copyTo(scaledBitmap)
 
-            val blurX = (targetWidth - destImgWidth) / 2
-            val blurY = (targetHeight - destImgHeight) / 2
+            val blurX = (targetWidth - blurWidth) / 2
+            val blurY = (targetHeight - blurHeight) / 2
 
             val paint = Paint()
             paint.isAntiAlias = true
@@ -338,7 +346,7 @@ class MainActivity :
             canvas.drawBitmap(
                 scaledBitmap,
                 null,
-                Rect(blurX, blurY, blurX + destImgWidth, blurY + destImgHeight),
+                Rect(blurX, blurY, blurX + blurWidth, blurY + blurHeight),
                 paint
             )
         }
