@@ -291,7 +291,10 @@ class MainActivity :
         val margin = (binding.seekBarMargin.progress * ratio).toInt()
         val border = (binding.seekBarBorder.progress * ratio).toInt()
 
-        val bestSize = getBestImgSize( targetWidth, targetWidth, srcImageWidth, srcImageHeight )
+        val bestSize = getBestImgSize( targetWidth, targetHeight, srcImageWidth, srcImageHeight )
+
+        Log.i("SIMPLE_SQUARE", "Dest: $targetWidth x $targetHeight, Img: $srcImageWidth x $srcImageHeight, BestFit: ${bestSize.first} x ${bestSize.second}")
+
         var imgWidth = bestSize.first - 2 * margin
         var imgHeight = bestSize.second - 2 * margin
 
