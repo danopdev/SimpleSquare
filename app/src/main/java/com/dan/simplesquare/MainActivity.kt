@@ -49,7 +49,7 @@ class MainActivity :
         const val REQUEST_PERMISSIONS = 1
         const val INTENT_OPEN_IMAGE = 2
 
-        const val IMG_WORK_SIZE = 1080
+        const val IMG_WORK_HEIGHT = 1080
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -243,89 +243,31 @@ class MainActivity :
         return Pair(destHeight * imgWidth / imgHeight, destHeight)
     }
 
-    private fun generateImage(targetSize_: Int): Bitmap? {
+    private fun getCentredRect(destWidth: Int, destHeight: Int, rectWidth: Int, rectHeight: Int): Rect {
+        val left = (destWidth - rectWidth) / 2
+        val top = (destHeight - rectHeight) / 2
+        return Rect( left, top, left + rectWidth, top + rectHeight);
+    }
+
+    private fun generateImage(targetHeight: Int): Bitmap? {
         val srcImage = this.srcImage ?: return null
         val srcImageWidth = srcImage.width
         val srcImageHeight = srcImage.height
         if (srcImageWidth <= 0 || srcImageHeight <= 0) return null
 
-        var shapeWidth = 1
-        var shapeHeight = 1
-
-        when(settings.shape) {
-            Settings.SHAPE_4x5 -> {
-                shapeWidth = 4
-                shapeHeight = 5
-            }
-        }
-
-        var targetWidth: Int
-        var targetHeight: Int
-
-        if (targetSize_ >= 0) {
-            targetWidth = targetSize_
-            targetHeight = targetWidth * shapeHeight / shapeWidth
-        } else {
-            targetWidth = srcImageWidth
-            targetHeight = targetWidth * shapeHeight / shapeWidth
-
-            if (targetSize_ > srcImageHeight) {
-                targetHeight = srcImageHeight
-                targetWidth = targetHeight * shapeWidth / shapeHeight
-            }
-        }
-
-        Log.i("SIMPLE_SQUARE", "Shape: ${shapeWidth} x ${shapeHeight}")
-        Log.i("SIMPLE_SQUARE", "Target: ${targetWidth} x ${targetHeight}")
-
-        val ratio = targetWidth.toFloat() / IMG_WORK_SIZE
-        val margin = (binding.seekBarMargin.progress * ratio).toInt()
-        val border = (binding.seekBarBorder.progress * ratio).toInt()
-        val fullMargin = margin + border
-
-        if (targetSize_ <= 0) {
-            targetWidth += 2 * fullMargin
-            targetHeight += 2 * fullMargin
+        val targetWidth = when(settings.shape) {
+            Settings.SHAPE_4x5 -> (((targetHeight * 4 / 5) + 3) / 4) * 4
+            else -> targetHeight
         }
 
         val destImage = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888)
-
         val canvas = Canvas(destImage)
-        canvas.drawColor(backgroundColor)
-
-        var destImgWidth = targetWidth
-        var destImgHeight = targetHeight
-
-        if (targetSize_ > 0) {
-            destImgWidth -= 2 * fullMargin
-            destImgHeight -= 2 * fullMargin
-        }
-
-        Log.i("SIMPLE_SQUARE", "Img: ${destImgWidth} x ${destImgHeight}")
-
-        getBestImgSize(destImgWidth, destImgHeight, srcImageWidth, srcImageHeight).let{ s ->
-            destImgWidth = s.first
-            destImgHeight = s.second
-        }
-
-        Log.i("SIMPLE_SQUARE", "Img: ${destImgWidth} x ${destImgHeight}")
-
-        val destImgX = (targetWidth - destImgWidth) / 2
-        val destImgY = (targetHeight - destImgHeight) / 2
 
         if (binding.rbBackgroundBlur.isChecked) {
-            var blurWidth = targetWidth
-            var blurHeight = targetWidth * shapeHeight / shapeWidth
-
-            if (blurHeight < targetHeight) {
-                blurHeight = targetHeight
-                blurWidth = targetHeight * shapeWidth / shapeHeight
-            }
-
             val scaledBitmap = Bitmap.createScaledBitmap(
                 srcImage,
-                blurWidth / 8,
-                blurHeight / 8,
+                srcImageWidth / 8,
+                srcImageHeight / 8,
                 true
             )
             val inputRSBitmap = Allocation.createFromBitmap(rendererScript, scaledBitmap)
@@ -335,35 +277,39 @@ class MainActivity :
             rendererScriptBlur.forEach(outputRSBitmap)
             outputRSBitmap.copyTo(scaledBitmap)
 
-            val blurX = (targetWidth - blurWidth) / 2
-            val blurY = (targetHeight - blurHeight) / 2
-
             val paint = Paint()
             paint.isAntiAlias = true
             paint.isFilterBitmap = true
             paint.color = Color.argb(128, 255, 255, 255)
 
-            canvas.drawBitmap(
-                scaledBitmap,
-                null,
-                Rect(blurX, blurY, blurX + blurWidth, blurY + blurHeight),
-                paint
-            )
+            canvas.drawBitmap( scaledBitmap, null, Rect(0, 0, targetWidth, targetHeight), paint )
+        } else {
+            canvas.drawColor(backgroundColor)
         }
 
+        val ratio = targetHeight.toFloat() / IMG_WORK_HEIGHT
+        val margin = (binding.seekBarMargin.progress * ratio).toInt()
+        val border = (binding.seekBarBorder.progress * ratio).toInt()
+
+        val bestSize = getBestImgSize( targetWidth, targetWidth, srcImageWidth, srcImageHeight )
+        var imgWidth = bestSize.first - 2 * margin
+        var imgHeight = bestSize.second - 2 * margin
+
         if (binding.checkBorderShadow.isChecked) {
+            val shadow = (10 * ratio).toInt()
+
             val blurPaint = Paint()
             blurPaint.maskFilter = BlurMaskFilter(16 * ratio, BlurMaskFilter.Blur.NORMAL)
             blurPaint.style = Paint.Style.FILL
             blurPaint.color = Color.argb(160, 0, 0, 0)
 
             canvas.drawRect(
-                (destImgX - border - 10).toFloat(),
-                (destImgY - border - 10).toFloat(),
-                (destImgX + destImgWidth + border + 10).toFloat(),
-                (destImgY + destImgHeight + border + 10).toFloat(),
+                getCentredRect( targetWidth, targetHeight, imgWidth, imgHeight ),
                 blurPaint
             )
+
+            imgWidth -= shadow
+            imgHeight -= shadow
         }
 
         if (border > 0) {
@@ -371,12 +317,12 @@ class MainActivity :
             borderPaint.style = Paint.Style.FILL
             borderPaint.color = borderColor
             canvas.drawRect(
-                (destImgX - border).toFloat(),
-                (destImgY - border).toFloat(),
-                (destImgX + destImgWidth + border).toFloat(),
-                (destImgY + destImgHeight + border).toFloat(),
+                getCentredRect( targetWidth, targetHeight, imgWidth, imgHeight ),
                 borderPaint
             )
+
+            imgWidth -= border
+            imgHeight -= border
         }
 
         val colorMatrix = ColorMatrix()
@@ -396,7 +342,7 @@ class MainActivity :
         canvas.drawBitmap(
             srcImage,
             null,
-            Rect(destImgX, destImgY, destImgX + destImgWidth, destImgY + destImgHeight),
+            getCentredRect( targetWidth, targetHeight, imgWidth, imgHeight ),
             filterPaint
         )
 
@@ -453,7 +399,7 @@ class MainActivity :
     }
 
     private fun updateImage() {
-        val destImage = generateImage(IMG_WORK_SIZE) ?: return
+        val destImage = generateImage(IMG_WORK_HEIGHT) ?: return
         binding.imageView.setImageBitmap(destImage)
     }
 
