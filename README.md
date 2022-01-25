@@ -1,6 +1,7 @@
 # SimpleSquare
 
-The initial idea was to fix a photo in a 4x5 image (suitable for Instagram).
+The initial idea was to fit a photo in a 4x5 image (suitable for Instagram).
+
 Now it support 4x5 ratio too, so the name is not perfect.
 
 You can change:
