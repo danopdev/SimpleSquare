@@ -280,7 +280,19 @@ class MainActivity :
             paint.isFilterBitmap = true
             paint.color = Color.argb(128, 255, 255, 255)
 
-            canvas.drawBitmap( scaledBitmap, null, Rect(0, 0, targetWidth, targetHeight), paint )
+            var scaledWidth = targetWidth
+            var scaledHeight = targetWidth * srcImageHeight / srcImageWidth
+
+            if (scaledHeight < targetHeight) {
+                scaledHeight = targetHeight
+                scaledWidth = targetHeight * srcImageWidth / srcImageHeight
+            }
+
+            canvas.drawBitmap(
+                scaledBitmap, null,
+                Rect((targetWidth - scaledWidth) / 2, (targetHeight - scaledHeight), scaledWidth, scaledHeight),
+                paint
+            )
         } else {
             canvas.drawColor(backgroundColor)
         }
